@@ -1,12 +1,12 @@
 {
-    "name": "werneckbh/qr-code",
+    "name": "webpatser/qr-code",
     "description": "QR Code Generator for PHP",
     "type": "library",
     "license": "MIT",
     "authors": [
         {
-            "name": "Bruno Vaula Werneck",
-            "email": "brunovaulawerneck@gmail.com"
+            "name": "Christoph Kempen",
+            "email": "christoph@downsized.nl"
         }
     ],
     "require": {},

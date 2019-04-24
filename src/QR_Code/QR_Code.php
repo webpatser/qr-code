@@ -182,10 +182,10 @@ class QR_Code
      * @param int         $back_color
      * @param int         $fore_color
      */
-    public static function png (string $text, $outfile = false, $level = QR_ECLEVEL_L, int $size = 3, int $margin = 4, bool $saveAndPrint = false, int $back_color = QR_WHITE, int $fore_color = QR_BLACK) : void
+    public static function png (string $text, $outfile = false, $level = QR_ECLEVEL_L, int $size = 3, int $margin = 4, bool $saveAndPrint = false, int $back_color = QR_WHITE, int $fore_color = QR_BLACK) : string
     {
         $enc = Encoder::factory($level, $size, $margin, $back_color, $fore_color);
-        $enc->encodePNG($text, $outfile, $saveAndPrint);
+        return $enc->encodePNG($text, $outfile, $saveAndPrint);
     }
 
     /**

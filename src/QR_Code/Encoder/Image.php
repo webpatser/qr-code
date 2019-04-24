@@ -24,24 +24,30 @@ class Image
      * @param int   $backColor
      * @param int   $foreColor
      */
-    public static function png (array $frame, $filename = false, int $pixelPerPoint = 4, int $outerFrame = 4, bool $saveAndPrint = false, int $backColor = QR_WHITE, int $foreColor = QR_BLACK) : void
+    public static function png (array $frame, $filename = false, int $pixelPerPoint = 4, int $outerFrame = 4, bool $saveAndPrint = false, int $backColor = QR_WHITE, int $foreColor = QR_BLACK) : string
     {
         $image = self::image($frame, $pixelPerPoint, $outerFrame, $backColor, $foreColor);
 
+
         if ($filename === false) {
-            Header("Content-type: image/png");
+            ob_start();
             ImagePng($image);
+            $qr = ob_get_clean();
         } else {
             if ($saveAndPrint === true) {
                 ImagePng($image, $filename);
-                header("Content-type: image/png");
                 ImagePng($image);
             } else {
-                ImagePng($image, $filename);
+                ob_start();
+                ImagePng($image);
+                $qr = ob_get_clean();
             }
         }
 
         ImageDestroy($image);
+
+        return ('data:image/png;base64, ' . base64_encode($qr));
+
     }
 
     /**
@@ -58,7 +64,6 @@ class Image
         $image = self::image($frame, $pixelPerPoint, $outerFrame);
 
         if ($filename === false) {
-            Header("Content-type: image/jpeg");
             ImageJpeg($image, null, $quality);
         } else {
             ImageJpeg($image, $filename, $quality);

@@ -135,20 +135,16 @@ class Encoder
      * @param string|bool $outfile
      * @param bool        $saveAndPrint
      */
-    public function encodePNG (string $inText, $outfile = false, $saveAndPrint = false) : void
+    public function encodePNG (string $inText, $outfile = false, $saveAndPrint = false) : string
     {
         try {
 
-            ob_start();
             $tab = $this->encode($inText);
-            $err = ob_get_contents();
-            ob_end_clean();
 
-            if ($err != '') Logger::log($outfile, $err);
 
             $maxSize = (int) (QR_PNG_MAXIMUM_SIZE / (count($tab) + 2 * $this->margin));
 
-            Image::png($tab, $outfile, min(max(1, $this->size), $maxSize), $this->margin, $saveAndPrint, $this->backColor, $this->foreColor);
+            return Image::png($tab, $outfile, min(max(1, $this->size), $maxSize), $this->margin, $saveAndPrint, $this->backColor, $this->foreColor);
 
         } catch (\Exception $e) {
 

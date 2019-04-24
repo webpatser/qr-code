@@ -125,9 +125,9 @@ abstract class AbstractGenerator
     /**
      * Stream and/or save PNG QR Code
      */
-    public function png () : void
+    public function png () : string
     {
-        QR_Code::png($this->getCodeString(), $this->outfile, $this->errorCorrectionLevel, $this->size, $this->margin, $this->saveAndPrint, $this->backColor, $this->foreColor);
+        return QR_Code::png($this->getCodeString(), $this->outfile, $this->errorCorrectionLevel, $this->size, $this->margin, $this->saveAndPrint, $this->backColor, $this->foreColor);
     }
 
     /**

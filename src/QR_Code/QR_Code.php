@@ -19,23 +19,22 @@ use QR_Code\Util\Split;
  *
  * QR Code Generator for PHP is distributed under MIT
  * Copyright (C) 2018 Bruno Vaula Werneck <brunovaulawerneck at gmail dot com>
- *
- *
- * @package QR_Code
  */
 class QR_Code
 {
     public $version;
+
     public $width;
+
     public $data;
 
     /**
-     * @param \QR_Code\Encoder\Input $input
-     * @param  mixed                 $mask
+     * @param  mixed  $mask
      * @return $this|null
+     *
      * @throws \Exception
      */
-    public function encodeMask (Input $input, $mask)
+    public function encodeMask(Input $input, $mask)
     {
         if ($input->getVersion() < 0 || $input->getVersion() > QRSPEC_VERSION_MAX) {
             throw new \Exception('wrong version');
@@ -82,9 +81,8 @@ class QR_Code
         $frame = $filler->frame;
         unset($filler);
 
-
         // masking
-        $maskObj = new Mask();
+        $maskObj = new Mask;
         if ($mask < 0) {
 
             if (QR_FIND_BEST_MASK) {
@@ -110,35 +108,37 @@ class QR_Code
     }
 
     /**
-     * @param \QR_Code\Encoder\Input $input
      * @return null|\QR_Code\QR_Code
+     *
      * @throws \Exception
      */
-    public function encodeInput (Input $input)
+    public function encodeInput(Input $input)
     {
         return $this->encodeMask($input, -1);
     }
 
     /**
-     * @param string     $string
-     * @param int        $version
-     * @param string|int $level
+     * @param  string|int  $level
      * @return null|\QR_Code\QR_Code
+     *
      * @throws \Exception
      */
-    public function encodeString8bit (string $string, int $version, $level)
+    public function encodeString8bit(string $string, int $version, $level)
     {
         if ($string == null) {
             throw new \Exception('empty string!');
         }
 
         $input = new Input($version, $level);
-        if ($input == null) return null;
+        if ($input == null) {
+            return null;
+        }
 
         $ret = $input->append(QR_MODE_8, strlen($string), str_split($string));
 
         if ($ret < 0) {
             unset($input);
+
             return null;
         }
 
@@ -146,22 +146,21 @@ class QR_Code
     }
 
     /**
-     * @param string     $string
-     * @param int        $version
-     * @param string|int $level
-     * @param int        $hint
-     * @param bool       $caseSensitive
+     * @param  string|int  $level
      * @return null|\QR_Code\QR_Code
+     *
      * @throws \Exception
      */
-    public function encodeString (string $string, int $version, $level, int $hint, bool $caseSensitive)
+    public function encodeString(string $string, int $version, $level, int $hint, bool $caseSensitive)
     {
         if ($hint != QR_MODE_8 && $hint != QR_MODE_KANJI) {
             throw new \Exception('bad hint');
         }
 
         $input = new Input($version, $level);
-        if ($input == null) return null;
+        if ($input == null) {
+            return null;
+        }
 
         $ret = Split::splitStringToQRinput($string, $input, $hint, $caseSensitive);
 
@@ -173,81 +172,59 @@ class QR_Code
     }
 
     /**
-     * @param  string     $text
-     * @param string|bool $outfile
-     * @param string|int  $level
-     * @param int         $size
-     * @param int         $margin
-     * @param bool        $saveAndPrint
-     * @param int         $back_color
-     * @param int         $fore_color
+     * @param  string|bool  $outfile
+     * @param  string|int  $level
      */
-    public static function png (string $text, $outfile = false, $level = QR_ECLEVEL_L, int $size = 3, int $margin = 4, bool $saveAndPrint = false, int $back_color = QR_WHITE, int $fore_color = QR_BLACK) : string
+    public static function png(string $text, $outfile = false, $level = QR_ECLEVEL_L, int $size = 3, int $margin = 4, bool $saveAndPrint = false, int $back_color = QR_WHITE, int $fore_color = QR_BLACK): string
     {
         $enc = Encoder::factory($level, $size, $margin, $back_color, $fore_color);
+
         return $enc->encodePNG($text, $outfile, $saveAndPrint);
     }
 
     /**
-     * @param      $text
-     * @param bool $outfile
-     * @param int  $level
-     * @param int  $size
-     * @param int  $margin
-     * @return array
+     * @param  bool  $outfile
+     * @param  int  $level
+     *
      * @throws \Exception
      */
-    public static function text (string $text, $outfile = false, $level = QR_ECLEVEL_L, int $size = 3, int $margin = 4) : array
+    public static function text(string $text, $outfile = false, $level = QR_ECLEVEL_L, int $size = 3, int $margin = 4): array
     {
         $enc = Encoder::factory($level, $size, $margin);
+
         return $enc->encode($text, $outfile);
     }
 
     /**
-     * @param  string     $text
-     * @param string|bool $outfile
-     * @param string|int  $level
-     * @param int         $size
-     * @param int         $margin
-     * @param bool        $saveAndPrint
-     * @param int         $back_color
-     * @param int         $fore_color
-     * @param bool        $cmyk
+     * @param  string|bool  $outfile
+     * @param  string|int  $level
      */
-    public static function eps (string $text, $outfile = false, $level = QR_ECLEVEL_L, int $size = 3, int $margin = 4, bool $saveAndPrint = false, int $back_color = QR_WHITE, int $fore_color = QR_BLACK, bool $cmyk = false) : void
+    public static function eps(string $text, $outfile = false, $level = QR_ECLEVEL_L, int $size = 3, int $margin = 4, bool $saveAndPrint = false, int $back_color = QR_WHITE, int $fore_color = QR_BLACK, bool $cmyk = false): void
     {
         $enc = Encoder::factory($level, $size, $margin, $back_color, $fore_color, $cmyk);
         $enc->encodeEPS($text, $outfile, $saveAndPrint);
     }
 
     /**
-     * @param string      $text
-     * @param string|bool $outfile
-     * @param string|int  $level
-     * @param int         $size
-     * @param int         $margin
-     * @param bool        $saveAndPrint
-     * @param int         $back_color
-     * @param int         $fore_color
+     * @param  string|bool  $outfile
+     * @param  string|int  $level
      */
-    public static function svg (string $text, $outfile = false, $level = QR_ECLEVEL_L, int $size = 3, int $margin = 4, bool $saveAndPrint = false, int $back_color = QR_WHITE, int $fore_color = QR_BLACK) : void
+    public static function svg(string $text, $outfile = false, $level = QR_ECLEVEL_L, int $size = 3, int $margin = 4, bool $saveAndPrint = false, int $back_color = QR_WHITE, int $fore_color = QR_BLACK): void
     {
         $enc = Encoder::factory($level, $size, $margin, $back_color, $fore_color);
         $enc->encodeSVG($text, $outfile, $saveAndPrint);
     }
 
     /**
-     * @param string      $text
-     * @param string|bool $outfile
-     * @param int         $level
-     * @param int         $size
-     * @param int         $margin
+     * @param  string|bool  $outfile
      * @return mixed
+     *
      * @throws \Exception
      */
-    public static function raw (string $text, $outfile = false, int $level = QR_ECLEVEL_L, int $size = 3, int $margin = 4)
+    public static function raw(string $text, $outfile = false, int $level = QR_ECLEVEL_L, int $size = 3, int $margin = 4)
     {
         $enc = Encoder::factory($level, $size, $margin);
+
         return $enc->encodeRAW($text, $outfile);
     }
 }

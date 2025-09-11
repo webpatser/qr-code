@@ -6,15 +6,17 @@ use QR_Code\Enums\ImageEngine;
 
 /**
  * High-performance image renderer supporting multiple engines
- * 
- * @package QR_Code\Renderer
  */
 abstract class ImageRenderer
 {
     protected ImageEngine $engine;
+
     protected int $size;
+
     protected int $margin;
+
     protected int $backgroundColor;
+
     protected int $foregroundColor;
 
     public function __construct(
@@ -24,7 +26,7 @@ abstract class ImageRenderer
         int $backgroundColor = QR_WHITE,
         int $foregroundColor = QR_BLACK
     ) {
-        if (!$engine->isAvailable()) {
+        if (! $engine->isAvailable()) {
             throw new \RuntimeException("Image engine {$engine->value} is not available");
         }
 
@@ -45,7 +47,7 @@ abstract class ImageRenderer
         int $foregroundColor = QR_BLACK
     ): self {
         $engine = ImageEngine::detectBest();
-        
+
         return match ($engine) {
             ImageEngine::Imagick => new ImagickRenderer($engine, $size, $margin, $backgroundColor, $foregroundColor),
             ImageEngine::GD => new GdRenderer($engine, $size, $margin, $backgroundColor, $foregroundColor),
@@ -95,12 +97,12 @@ abstract class ImageRenderer
     {
         $moduleCount = count($matrix);
         $totalSize = ($moduleCount + 2 * $this->margin) * $this->size;
-        
+
         return [
             'moduleCount' => $moduleCount,
             'totalSize' => $totalSize,
             'moduleSize' => $this->size,
-            'margin' => $this->margin * $this->size
+            'margin' => $this->margin * $this->size,
         ];
     }
 
@@ -112,7 +114,7 @@ abstract class ImageRenderer
         return [
             'r' => ($color >> 16) & 0xFF,
             'g' => ($color >> 8) & 0xFF,
-            'b' => $color & 0xFF
+            'b' => $color & 0xFF,
         ];
     }
 }

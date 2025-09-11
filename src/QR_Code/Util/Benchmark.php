@@ -10,33 +10,28 @@ namespace QR_Code\Util;
  *
  * QR Code Generator for PHP is distributed under MIT
  * Copyright (C) 2018 Bruno Vaula Werneck <brunovaulawerneck at gmail dot com>
- *
- * @package QR_Code\Util
  */
 class Benchmark
 {
     /**
      * Set mark
-     *
-     * @param string $id
      */
-    public static function mark (string $id) : void
+    public static function mark(string $id): void
     {
-        list($usec, $sec) = explode(" ", microtime());
+        [$usec, $sec] = explode(' ', microtime());
         $time = ((float) $usec + (float) $sec);
 
-        if (!isset($GLOBALS['qr_time_bench']))
+        if (! isset($GLOBALS['qr_time_bench'])) {
             $GLOBALS['qr_time_bench'] = [];
+        }
 
         $GLOBALS['qr_time_bench'][$id] = $time;
     }
 
     /**
      * Returns Benchmark table
-     *
-     * @return array
      */
-    public static function getResults () : array
+    public static function getResults(): array
     {
         self::mark('finish');
 

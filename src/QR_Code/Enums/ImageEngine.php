@@ -4,8 +4,6 @@ namespace QR_Code\Enums;
 
 /**
  * Image generation engines with performance characteristics
- * 
- * @package QR_Code\Enums
  */
 enum ImageEngine: string
 {
@@ -55,13 +53,13 @@ enum ImageEngine: string
     public static function detectBest(): self
     {
         $engines = [self::Imagick, self::GD, self::None];
-        
+
         foreach ($engines as $engine) {
             if ($engine->isAvailable()) {
                 return $engine;
             }
         }
-        
+
         return self::None;
     }
 
@@ -71,7 +69,7 @@ enum ImageEngine: string
     public static function getAvailable(): array
     {
         $engines = [self::Imagick, self::GD, self::None];
-        
-        return array_filter($engines, fn($engine) => $engine->isAvailable());
+
+        return array_filter($engines, fn ($engine) => $engine->isAvailable());
     }
 }

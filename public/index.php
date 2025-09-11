@@ -1,4 +1,4 @@
-<?php include __DIR__ . "/includes/header.inc.php"; ?>
+<?php include __DIR__.'/includes/header.inc.php'; ?>
 <!doctype html>
 <html lang="en">
 <head>
@@ -23,10 +23,12 @@
 
 <?php
 
-include __DIR__. '/includes/sectionForm.inc.php';
-include __DIR__. '/includes/sectionResults.inc.php';
-if ($showBenchmark) include __DIR__ . '/includes/benchmarkTable.inc.php';
-include __DIR__. '/includes/sectionTemporaryDirectory.inc.php';
+include __DIR__.'/includes/sectionForm.inc.php';
+include __DIR__.'/includes/sectionResults.inc.php';
+if ($showBenchmark) {
+    include __DIR__.'/includes/benchmarkTable.inc.php';
+}
+include __DIR__.'/includes/sectionTemporaryDirectory.inc.php';
 
 ?>
 

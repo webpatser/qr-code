@@ -12,8 +12,6 @@ use QR_Code\Config\Specifications;
  *
  * QR Code Generator for PHP is distributed under MIT
  * Copyright (C) 2018 Bruno Vaula Werneck <brunovaulawerneck at gmail dot com>
- *
- * @package QR_Code\Encoder
  */
 class Mask
 {
@@ -22,19 +20,12 @@ class Mask
     /**
      * Mask constructor.
      */
-    public function __construct ()
+    public function __construct()
     {
         $this->runLength = array_fill(0, QRSPEC_WIDTH_MAX + 1, 0);
     }
 
-    /**
-     * @param int   $width
-     * @param array $frame
-     * @param int   $mask
-     * @param int   $level
-     * @return int
-     */
-    public function writeFormatInformation (int $width, array &$frame, int $mask, int $level) : int
+    public function writeFormatInformation(int $width, array &$frame, int $mask, int $level): int
     {
         $blacks = 0;
         $format = Specifications::getFormatInfo($mask, $level);
@@ -78,33 +69,52 @@ class Mask
     }
 
     /**
-     * @param $x
-     * @param $y
      * @return int
      */
-    public function mask0 ($x, $y) { return ($x + $y) & 1; }
+    public function mask0($x, $y)
+    {
+        return ($x + $y) & 1;
+    }
 
-    public function mask1 ($x, $y) { return ($y & 1); }
+    public function mask1($x, $y)
+    {
+        return $y & 1;
+    }
 
-    public function mask2 ($x, $y) { return ($x % 3); }
+    public function mask2($x, $y)
+    {
+        return $x % 3;
+    }
 
-    public function mask3 ($x, $y) { return ($x + $y) % 3; }
+    public function mask3($x, $y)
+    {
+        return ($x + $y) % 3;
+    }
 
-    public function mask4 ($x, $y) { return (((int) ($y / 2)) + ((int) ($x / 3))) & 1; }
+    public function mask4($x, $y)
+    {
+        return (((int) ($y / 2)) + ((int) ($x / 3))) & 1;
+    }
 
-    public function mask5 ($x, $y) { return (($x * $y) & 1) + ($x * $y) % 3; }
+    public function mask5($x, $y)
+    {
+        return (($x * $y) & 1) + ($x * $y) % 3;
+    }
 
-    public function mask6 ($x, $y) { return ((($x * $y) & 1) + ($x * $y) % 3) & 1; }
+    public function mask6($x, $y)
+    {
+        return ((($x * $y) & 1) + ($x * $y) % 3) & 1;
+    }
 
-    public function mask7 ($x, $y) { return ((($x * $y) % 3) + (($x + $y) & 1)) & 1; }
+    public function mask7($x, $y)
+    {
+        return ((($x * $y) % 3) + (($x + $y) & 1)) & 1;
+    }
 
     /**
-     * @param mixed $maskNo
-     * @param int   $width
-     * @param array $frame
-     * @return array
+     * @param  mixed  $maskNo
      */
-    private function generateMaskNo ($maskNo, int $width, array $frame) : array
+    private function generateMaskNo($maskNo, int $width, array $frame): array
     {
         $bitMask = array_fill(0, $width, array_fill(0, $width, 0));
 
@@ -113,7 +123,7 @@ class Mask
                 if (ord($frame[$y][$x]) & 0x80) {
                     $bitMask[$y][$x] = 0;
                 } else {
-                    $maskFunc = call_user_func([$this, 'mask' . $maskNo], $x, $y);
+                    $maskFunc = call_user_func([$this, 'mask'.$maskNo], $x, $y);
                     $bitMask[$y][$x] = ($maskFunc == 0) ? 1 : 0;
                 }
 
@@ -123,65 +133,57 @@ class Mask
         return $bitMask;
     }
 
-    /**
-     * @param array $bitFrame
-     * @return string
-     */
-    public static function serial (array $bitFrame) : string
+    public static function serial(array $bitFrame): string
     {
         $codeArr = [];
 
-        foreach ($bitFrame as $line)
-            $codeArr[] = join('', $line);
+        foreach ($bitFrame as $line) {
+            $codeArr[] = implode('', $line);
+        }
 
-        return gzcompress(join("\n", $codeArr), 9);
+        return gzcompress(implode("\n", $codeArr), 9);
     }
 
-    /**
-     * @param string $code
-     * @return array
-     */
-    public static function unserial (string $code) : array
+    public static function unserial(string $code): array
     {
         $codeArr = [];
 
         $codeLines = explode("\n", gzuncompress($code));
-        foreach ($codeLines as $line)
+        foreach ($codeLines as $line) {
             $codeArr[] = str_split($line);
+        }
 
         return $codeArr;
     }
 
     /**
-     * @param      $maskNo
-     * @param      $width
-     * @param      $s
-     * @param      $d
-     * @param bool $maskGenOnly
+     * @param  bool  $maskGenOnly
      * @return int|null
      */
-    public function makeMaskNo ($maskNo, $width, $s, &$d, $maskGenOnly = false)
+    public function makeMaskNo($maskNo, $width, $s, &$d, $maskGenOnly = false)
     {
         $b = 0;
         $bitMask = [];
 
-        $fileName = QR_CACHE_DIR . 'mask_' . $maskNo . DIRECTORY_SEPARATOR . 'mask_' . $width . '_' . $maskNo . '.dat';
+        $fileName = QR_CACHE_DIR.'mask_'.$maskNo.DIRECTORY_SEPARATOR.'mask_'.$width.'_'.$maskNo.'.dat';
 
         if (QR_CACHEABLE) {
             if (file_exists($fileName)) {
                 $bitMask = self::unserial(file_get_contents($fileName));
             } else {
                 $bitMask = $this->generateMaskNo($maskNo, $width, $s, $d);
-                if (!file_exists(QR_CACHE_DIR . 'mask_' . $maskNo))
-                    mkdir(QR_CACHE_DIR . 'mask_' . $maskNo);
+                if (! file_exists(QR_CACHE_DIR.'mask_'.$maskNo)) {
+                    mkdir(QR_CACHE_DIR.'mask_'.$maskNo);
+                }
                 file_put_contents($fileName, self::serial($bitMask));
             }
         } else {
             $bitMask = $this->generateMaskNo($maskNo, $width, $s, $d);
         }
 
-        if ($maskGenOnly)
+        if ($maskGenOnly) {
             return null;
+        }
 
         $d = $s;
 
@@ -198,13 +200,9 @@ class Mask
     }
 
     /**
-     * @param $width
-     * @param $frame
-     * @param $maskNo
-     * @param $level
      * @return array
      */
-    public function makeMask ($width, $frame, $maskNo, $level)
+    public function makeMask($width, $frame, $maskNo, $level)
     {
         $masked = array_fill(0, $width, str_repeat("\0", $width));
         $this->makeMaskNo($maskNo, $width, $frame, $masked);
@@ -214,10 +212,9 @@ class Mask
     }
 
     /**
-     * @param $length
      * @return int|mixed
      */
-    public function calcN1N3 ($length)
+    public function calcN1N3($length)
     {
         $demerit = 0;
 
@@ -242,15 +239,14 @@ class Mask
                 }
             }
         }
+
         return $demerit;
     }
 
     /**
-     * @param int   $width
-     * @param array $frame
      * @return int|mixed
      */
-    public function evaluateSymbol (int $width, array $frame)
+    public function evaluateSymbol(int $width, array $frame)
     {
         $head = 0;
         $demerit = 0;
@@ -261,8 +257,9 @@ class Mask
 
             $frameY = $frame[$y];
 
-            if ($y > 0)
+            if ($y > 0) {
                 $frameYM = $frame[$y - 1];
+            }
 
             for ($x = 0; $x < $width; $x++) {
                 if (($x > 0) && ($y > 0)) {
@@ -315,14 +312,7 @@ class Mask
         return $demerit;
     }
 
-
-    /**
-     * @param int   $width
-     * @param array $frame
-     * @param int   $level
-     * @return array
-     */
-    public function mask (int $width, array $frame, int $level) : array
+    public function mask(int $width, array $frame, int $level): array
     {
         $minDemerit = PHP_INT_MAX;
         $bestMaskNum = 0;

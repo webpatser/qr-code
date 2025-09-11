@@ -6,8 +6,6 @@ use QR_Code\Enums\ErrorCorrectionLevel;
 
 /**
  * Modern QR Code Configuration using PHP 8.2+ features
- * 
- * @package QR_Code\Config
  */
 readonly class QRConfig
 {
@@ -61,7 +59,7 @@ readonly class QRConfig
      */
     public static function default(): self
     {
-        return new self();
+        return new self;
     }
 
     /**

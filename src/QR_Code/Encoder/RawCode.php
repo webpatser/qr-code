@@ -14,27 +14,33 @@ use QR_Code\Encoder\ErrorCorrection\RsBlock;
  *
  * QR Code Generator for PHP is distributed under MIT
  * Copyright (C) 2018 Bruno Vaula Werneck <brunovaulawerneck at gmail dot com>
- *
- * @package QR_Code\Encoder
  */
 class RawCode
 {
     public $version;
+
     public $dataCode = [];
-    public $eccCode  = [];
+
+    public $eccCode = [];
+
     public $blocks;
-    public $rsBlocks = []; //of rsBlocs
+
+    public $rsBlocks = []; // of rsBlocs
+
     public $count;
+
     public $dataLength;
+
     public $eccLength;
+
     public $b1;
 
     /**
      * RawCode constructor.
-     * @param \QR_Code\Encoder\Input $input
+     *
      * @throws \Exception
      */
-    public function __construct (Input $input)
+    public function __construct(Input $input)
     {
         $spec = [0, 0, 0, 0, 0];
 
@@ -60,16 +66,11 @@ class RawCode
         $this->count = 0;
     }
 
-    /**
-     * @param array $spec
-     * @return int
-     */
-    public function init (array $spec) : int
+    public function init(array $spec): int
     {
         $dl = Specifications::rsDataCodes1($spec);
         $el = Specifications::rsEccCodes1($spec);
-        $rs = Rs::init_rs(8, 0x11d, 0, 1, $el, 255 - $dl - $el);
-
+        $rs = Rs::init_rs(8, 0x11D, 0, 1, $el, 255 - $dl - $el);
 
         $blockNo = 0;
         $dataPos = 0;
@@ -84,14 +85,17 @@ class RawCode
             $blockNo++;
         }
 
-        if (Specifications::rsBlockNum2($spec) == 0)
+        if (Specifications::rsBlockNum2($spec) == 0) {
             return 0;
+        }
 
         $dl = Specifications::rsDataCodes2($spec);
         $el = Specifications::rsEccCodes2($spec);
-        $rs = Rs::init_rs(8, 0x11d, 0, 1, $el, 255 - $dl - $el);
+        $rs = Rs::init_rs(8, 0x11D, 0, 1, $el, 255 - $dl - $el);
 
-        if ($rs == null) return -1;
+        if ($rs == null) {
+            return -1;
+        }
 
         for ($i = 0; $i < Specifications::rsBlockNum2($spec); $i++) {
             $ecc = array_slice($this->eccCode, $eccPos);
@@ -109,7 +113,7 @@ class RawCode
     /**
      * @return int|null
      */
-    public function getCode ()
+    public function getCode()
     {
         $ret = null;
 

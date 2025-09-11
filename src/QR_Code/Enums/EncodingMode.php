@@ -4,8 +4,6 @@ namespace QR_Code\Enums;
 
 /**
  * QR Code Encoding Modes
- * 
- * @package QR_Code\Enums
  */
 enum EncodingMode: int
 {

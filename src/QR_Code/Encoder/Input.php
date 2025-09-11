@@ -12,23 +12,23 @@ use QR_Code\Config\Specifications;
  *
  * QR Code Generator for PHP is distributed under MIT
  * Copyright (C) 2018 Bruno Vaula Werneck <brunovaulawerneck at gmail dot com>
- *
- * @package QR_Code\Encoder
  */
 class Input
 {
     public $items;
 
     private $version;
+
     private $level;
 
     /**
      * Input constructor.
-     * @param int        $version
-     * @param int|string $level
+     *
+     * @param  int|string  $level
+     *
      * @throws \Exception
      */
-    public function __construct (int $version = 0, $level = QR_ECLEVEL_L)
+    public function __construct(int $version = 0, $level = QR_ECLEVEL_L)
     {
         if ($version < 0 || $version > QRSPEC_VERSION_MAX || $level > QR_ECLEVEL_H) {
             throw new \Exception('Invalid version no');
@@ -38,20 +38,15 @@ class Input
         $this->level = $level;
     }
 
-    /**
-     * @return int
-     */
-    public function getVersion () : int
+    public function getVersion(): int
     {
         return $this->version;
     }
 
     /**
-     * @param int $version
-     * @return int
      * @throws \Exception
      */
-    public function setVersion (int $version) : int
+    public function setVersion(int $version): int
     {
         if ($version < 0 || $version > QRSPEC_VERSION_MAX) {
             throw new \Exception('Invalid version no');
@@ -62,20 +57,15 @@ class Input
         return 0;
     }
 
-    /**
-     * @return int
-     */
-    public function getErrorCorrectionLevel () : int
+    public function getErrorCorrectionLevel(): int
     {
         return $this->level;
     }
 
     /**
-     * @param $level
-     * @return int
      * @throws \Exception
      */
-    public function setErrorCorrectionLevel ($level) : int
+    public function setErrorCorrectionLevel($level): int
     {
         if ($level > QR_ECLEVEL_H) {
             throw new \Exception('Invalid ECLEVEL');
@@ -86,25 +76,17 @@ class Input
         return 0;
     }
 
-    /**
-     * @param \QR_Code\Encoder\InputItem $entry
-     */
-    public function appendEntry (InputItem $entry) : void
+    public function appendEntry(InputItem $entry): void
     {
         $this->items[] = $entry;
     }
 
-    /**
-     * @param $mode
-     * @param $size
-     * @param $data
-     * @return int
-     */
-    public function append ($mode, $size, $data) : int
+    public function append($mode, $size, $data): int
     {
         try {
             $entry = new InputItem($mode, $size, $data);
             $this->items[] = $entry;
+
             return 0;
         } catch (\Exception $e) {
             return -1;
@@ -112,13 +94,9 @@ class Input
     }
 
     /**
-     * @param int   $size
-     * @param int   $index
-     * @param array $parity
-     * @return int
      * @throws \Exception
      */
-    public function insertStructuredAppendHeader (int $size, int $index, array $parity) : int
+    public function insertStructuredAppendHeader(int $size, int $index, array $parity): int
     {
         if ($size > MAX_STRUCTURED_SYMBOLS) {
             throw new \Exception('insertStructuredAppendHeader wrong size');
@@ -133,16 +111,14 @@ class Input
         try {
             $entry = new InputItem(QR_MODE_STRUCTURE, 3, $buf);
             array_unshift($this->items, $entry);
+
             return 0;
         } catch (\Exception $e) {
             return -1;
         }
     }
 
-    /**
-     * @return int
-     */
-    public function calcParity () : int
+    public function calcParity(): int
     {
         $parity = 0;
 
@@ -158,11 +134,9 @@ class Input
     }
 
     /**
-     * @param int   $size
-     * @param mixed $data
-     * @return bool
+     * @param  mixed  $data
      */
-    public static function checkModeNum (int $size, $data) : bool
+    public static function checkModeNum(int $size, $data): bool
     {
         for ($i = 0; $i < $size; $i++) {
             if ((ord($data[$i]) < ord('0')) || (ord($data[$i]) > ord('9'))) {
@@ -174,10 +148,9 @@ class Input
     }
 
     /**
-     * @param int $size
      * @return float|int
      */
-    public static function estimateBitsModeNum (int $size)
+    public static function estimateBitsModeNum(int $size)
     {
         $w = (int) $size / 3;
         $bits = $w * 10;
@@ -211,20 +184,17 @@ class Input
     ];
 
     /**
-     * @param int $c
      * @return int|mixed
      */
-    public static function lookAnTable (int $c)
+    public static function lookAnTable(int $c)
     {
-        return (($c > 127) ? -1 : self::$anTable[$c]);
+        return ($c > 127) ? -1 : self::$anTable[$c];
     }
 
     /**
-     * @param int   $size
-     * @param mixed $data
-     * @return bool
+     * @param  mixed  $data
      */
-    public static function checkModeAn (int $size, $data) : bool
+    public static function checkModeAn(int $size, $data): bool
     {
         for ($i = 0; $i < $size; $i++) {
             if (self::lookAnTable(ord($data[$i])) == -1) {
@@ -236,10 +206,9 @@ class Input
     }
 
     /**
-     * @param int $size
      * @return float|int
      */
-    public static function estimateBitsModeAn (int $size)
+    public static function estimateBitsModeAn(int $size)
     {
         $w = (int) ($size / 2);
         $bits = $w * 11;
@@ -252,38 +221,32 @@ class Input
     }
 
     /**
-     * @param int $size
      * @return float|int
      */
-    public static function estimateBitsMode8 (int $size)
+    public static function estimateBitsMode8(int $size)
     {
         return $size * 8;
     }
 
-    /**
-     * @param int $size
-     * @return int
-     */
-    public static function estimateBitsModeKanji (int $size) : int
+    public static function estimateBitsModeKanji(int $size): int
     {
         return (int) (($size / 2) * 13);
     }
 
     /**
-     * @param int   $size
-     * @param mixed $data
-     * @return bool
+     * @param  mixed  $data
      */
-    public static function checkModeKanji (int $size, $data) : bool
+    public static function checkModeKanji(int $size, $data): bool
     {
-        if ($size & 1)
+        if ($size & 1) {
             return false;
+        }
 
         for ($i = 0; $i < $size; $i += 2) {
             $val = (ord($data[$i]) << 8) | ord($data[$i + 1]);
             if ($val < 0x8140
-                || ($val > 0x9ffc && $val < 0xe040)
-                || $val > 0xebbf) {
+                || ($val > 0x9FFC && $val < 0xE040)
+                || $val > 0xEBBF) {
                 return false;
             }
         }
@@ -294,15 +257,13 @@ class Input
     /**
      * Validation
      *
-     * @param int   $mode
-     * @param int   $size
-     * @param mixed $data
-     * @return bool
+     * @param  mixed  $data
      */
-    public static function check (int $mode, int $size, $data) : bool
+    public static function check(int $mode, int $size, $data): bool
     {
-        if ($size <= 0)
+        if ($size <= 0) {
             return false;
+        }
 
         switch ($mode) {
             case QR_MODE_NUM:
@@ -328,12 +289,10 @@ class Input
         return false;
     }
 
-
     /**
-     * @param int $version
      * @return float|int
      */
-    public function estimateBitStreamSize (int $version)
+    public function estimateBitStreamSize(int $version)
     {
         $bits = 0;
 
@@ -347,10 +306,7 @@ class Input
         return $bits;
     }
 
-    /**
-     * @return int
-     */
-    public function estimateVersion () : int
+    public function estimateVersion(): int
     {
         $version = 0;
 
@@ -367,12 +323,9 @@ class Input
     }
 
     /**
-     * @param int $mode
-     * @param int $version
-     * @param     $bits
      * @return float|int
      */
-    public static function lengthOfCode (int $mode, int $version, $bits)
+    public static function lengthOfCode(int $mode, int $version, $bits)
     {
         $payload = $bits - 4 - Specifications::lengthIndicator($mode, $version);
         switch ($mode) {
@@ -390,8 +343,9 @@ class Input
                 $chunks = (int) ($payload / 11);
                 $remain = $payload - $chunks * 11;
                 $size = $chunks * 2;
-                if ($remain >= 6)
+                if ($remain >= 6) {
                     $size++;
+                }
                 break;
             case QR_MODE_8:
                 $size = (int) ($payload / 8);
@@ -408,16 +362,17 @@ class Input
         }
 
         $maxsize = Specifications::maximumWords($mode, $version);
-        if ($size < 0) $size = 0;
-        if ($size > $maxsize) $size = $maxsize;
+        if ($size < 0) {
+            $size = 0;
+        }
+        if ($size > $maxsize) {
+            $size = $maxsize;
+        }
 
         return $size;
     }
 
-    /**
-     * @return int
-     */
-    public function createBitStream () : int
+    public function createBitStream(): int
     {
         $total = 0;
 
@@ -427,8 +382,9 @@ class Input
         foreach ($this->items as $item) {
             $bits = $item->encodeBitStream($this->version);
 
-            if ($bits < 0)
+            if ($bits < 0) {
                 return -1;
+            }
 
             $total += $bits;
         }
@@ -437,10 +393,9 @@ class Input
     }
 
     /**
-     * @return int
      * @throws \Exception
      */
-    public function convertData () : int
+    public function convertData(): int
     {
         $ver = $this->estimateVersion();
         if ($ver > $this->getVersion()) {
@@ -450,8 +405,9 @@ class Input
         for (; ;) {
             $bits = $this->createBitStream();
 
-            if ($bits < 0)
+            if ($bits < 0) {
                 return -1;
+            }
 
             $ver = Specifications::getMinimumVersion((int) (($bits + 7) / 8), $this->level);
             if ($ver < 0) {
@@ -466,11 +422,7 @@ class Input
         return 0;
     }
 
-    /**
-     * @param \QR_Code\Encoder\BitStream $bitStream
-     * @return int
-     */
-    public function appendPaddingBit (BitStream &$bitStream) : int
+    public function appendPaddingBit(BitStream &$bitStream): int
     {
         $bits = $bitStream->size();
         $maxwords = Specifications::getDataLength($this->version, $this->level);
@@ -487,11 +439,12 @@ class Input
         $bits += 4;
         $words = (int) (($bits + 7) / 8);
 
-        $padding = new BitStream();
+        $padding = new BitStream;
         $ret = $padding->appendNum($words * 8 - $bits + 4, 0);
 
-        if ($ret < 0)
+        if ($ret < 0) {
             return $ret;
+        }
 
         $padlen = $maxwords - $words;
 
@@ -499,13 +452,14 @@ class Input
 
             $padbuf = [];
             for ($i = 0; $i < $padlen; $i++) {
-                $padbuf[$i] = ($i & 1) ? 0x11 : 0xec;
+                $padbuf[$i] = ($i & 1) ? 0x11 : 0xEC;
             }
 
             $ret = $padding->appendBytes($padlen, $padbuf);
 
-            if ($ret < 0)
+            if ($ret < 0) {
                 return $ret;
+            }
 
         }
 
@@ -516,15 +470,16 @@ class Input
 
     /**
      * @return null|\QR_Code\Encoder\BitStream
+     *
      * @throws \Exception
      */
-    public function mergeBitStream ()
+    public function mergeBitStream()
     {
         if ($this->convertData() < 0) {
             return null;
         }
 
-        $bitStream = new BitStream();
+        $bitStream = new BitStream;
 
         foreach ($this->items as $item) {
             $ret = $bitStream->append($item->bitStream);
@@ -538,9 +493,10 @@ class Input
 
     /**
      * @return null|\QR_Code\Encoder\BitStream
+     *
      * @throws \Exception
      */
-    public function getBitStream ()
+    public function getBitStream()
     {
 
         $bitStream = $this->mergeBitStream();
@@ -558,10 +514,9 @@ class Input
     }
 
     /**
-     * @return array
      * @throws \Exception
      */
-    public function getByteStream () : array
+    public function getByteStream(): array
     {
         $bitStream = $this->getBitStream();
         if ($bitStream == null) {

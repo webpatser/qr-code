@@ -8,13 +8,14 @@ use Zxing\QrReader;
 class QrCodeTests extends TestCase
 {
     protected $outfilePNG;
+
     protected $outfileSVG;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->outfilePNG = __DIR__ . DIRECTORY_SEPARATOR . 'test.png';
-        $this->outfileSVG = __DIR__ . DIRECTORY_SEPARATOR . 'test.svg';
+        $this->outfilePNG = __DIR__.DIRECTORY_SEPARATOR.'test.png';
+        $this->outfileSVG = __DIR__.DIRECTORY_SEPARATOR.'test.svg';
     }
 
     protected function tearDown(): void
@@ -30,35 +31,35 @@ class QrCodeTests extends TestCase
         }
     }
 
-    public function testIfPNGFileIsCreated ()
+    public function test_if_png_file_is_created()
     {
         \QR_Code\QR_Code::png('QR Code Test Suite', $this->outfilePNG);
 
         $this->assertTrue(file_exists($this->outfilePNG), "File not found: {$this->outfilePNG}");
     }
 
-    public function testIfCreatedPNGisPNG ()
+    public function test_if_created_pn_gis_png()
     {
         \QR_Code\QR_Code::png('QR Code Test Suite', $this->outfilePNG);
 
         $this->assertTrue(isPng($this->outfilePNG), "{$this->outfilePNG} is *NOT* a PNG");
     }
 
-    public function testIfSVGFileIsCreated ()
+    public function test_if_svg_file_is_created()
     {
         \QR_Code\QR_Code::svg('QR Code Test Suite', $this->outfileSVG);
 
         $this->assertTrue(file_exists($this->outfileSVG), "File not found: {$this->outfileSVG}");
     }
 
-    public function testIfCreatedSVGisSVG ()
+    public function test_if_created_sv_gis_svg()
     {
         \QR_Code\QR_Code::svg('QR Code Test Suite', $this->outfileSVG);
 
         $this->assertTrue(isSvg($this->outfileSVG), "{$this->outfileSVG} is *NOT* a SVG");
     }
 
-    public function testIfQRCalendarWorks ()
+    public function test_if_qr_calendar_works()
     {
         $qr = new \QR_Code\Types\QR_CalendarEvent(
             new \DateTime('next Saturday 7pm'),
@@ -70,15 +71,15 @@ class QrCodeTests extends TestCase
         $this->assertTrue($this->getPNGReader()->text() === $qr->getCodeString());
     }
 
-    public function testIfQREmailWorks ()
+    public function test_if_qr_email_works()
     {
-        $qr = new \QR_Code\Types\QR_EmailMessage('john.doe@example.com', 'Great News!','QR Code Generator for PHP!');
+        $qr = new \QR_Code\Types\QR_EmailMessage('john.doe@example.com', 'Great News!', 'QR Code Generator for PHP!');
         $this->createQR($qr);
 
         $this->assertTrue($this->getPNGReader()->text() === $qr->getCodeString());
     }
 
-    public function testIfQRPhoneWorks ()
+    public function test_if_qr_phone_works()
     {
         $qr = new \QR_Code\Types\QR_Phone('+55 31 1234-4321');
         $this->createQR($qr);
@@ -86,7 +87,7 @@ class QrCodeTests extends TestCase
         $this->assertTrue($this->getPNGReader()->text() === $qr->getCodeString());
     }
 
-    public function testIfQRSmsWorks ()
+    public function test_if_qr_sms_works()
     {
         $qr = new \QR_Code\Types\QR_Sms('+55 31 1234-4321', 'Text to send');
         $this->createQR($qr);
@@ -94,7 +95,7 @@ class QrCodeTests extends TestCase
         $this->assertTrue($this->getPNGReader()->text() === $qr->getCodeString());
     }
 
-    public function testIfQRTextWorks ()
+    public function test_if_qr_text_works()
     {
         $qr = new \QR_Code\Types\QR_Text('QR Code Test Suite');
         $this->createQR($qr);
@@ -102,7 +103,7 @@ class QrCodeTests extends TestCase
         $this->assertTrue($this->getPNGReader()->text() === $qr->getCodeString());
     }
 
-    public function testIfQRUrlWorks ()
+    public function test_if_qr_url_works()
     {
         $qr = new \QR_Code\Types\QR_Url('werneckbh.github.io/qr-code');
         $this->createQR($qr);
@@ -110,7 +111,7 @@ class QrCodeTests extends TestCase
         $this->assertTrue($this->getPNGReader()->text() === $qr->getCodeString());
     }
 
-    public function testIfQRmeCardWorks ()
+    public function test_if_q_rme_card_works()
     {
         $qr = new \QR_Code\Types\QR_meCard('John Doe', '1234 Main st.', '+1 001 555-1234', 'john.doe@example.com');
         $this->createQR($qr);
@@ -118,7 +119,7 @@ class QrCodeTests extends TestCase
         $this->assertSame($qr->getCodeString(), $this->getPNGReader()->text());
     }
 
-    public function testIfQRvCardWorks ()
+    public function test_if_q_rv_card_works()
     {
         $person = new \QR_Code\Types\vCard\Person('John', 'Doe', 'Mr.', 'john.doe@example.com');
 
@@ -134,11 +135,11 @@ class QrCodeTests extends TestCase
         $this->assertSame($qr->getCodeString(), $this->getPNGReader()->text());
     }
 
-    public function testIfQRWifiWorks ()
+    public function test_if_qr_wifi_works()
     {
-        $authenticationType = "WPA2";
-        $ssId = "MySuperSSID";
-        $password = "Y0uC4n7f1nd7h3p4ssw0rd";
+        $authenticationType = 'WPA2';
+        $ssId = 'MySuperSSID';
+        $password = 'Y0uC4n7f1nd7h3p4ssw0rd';
         $ssIdisHidden = false;
 
         $qr = new \QR_Code\Types\QR_WiFi($authenticationType, $ssId, $password, $ssIdisHidden);
@@ -149,20 +150,16 @@ class QrCodeTests extends TestCase
 
     /**
      * Create QR Code PNG temporary file
-     *
-     * @param \QR_Code\Util\AbstractGenerator $qr
      */
-    private function createQR (\QR_Code\Util\AbstractGenerator $qr)
+    private function createQR(\QR_Code\Util\AbstractGenerator $qr)
     {
         $qr->setOutfile($this->outfilePNG)->png();
     }
 
     /**
      * Get an instance of QrReader with current PNG image
-     *
-     * @return QrReader
      */
-    private function getPNGReader () : QrReader
+    private function getPNGReader(): QrReader
     {
         return new QrReader($this->outfilePNG);
     }

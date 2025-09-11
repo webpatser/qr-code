@@ -4,8 +4,6 @@ namespace QR_Code\Performance;
 
 /**
  * Performance monitor using PHP 8.4 asymmetric visibility
- * 
- * @package QR_Code\Performance
  */
 class PerformanceMonitor
 {
@@ -15,7 +13,7 @@ class PerformanceMonitor
     public private(set) int $totalOperations = 0;
 
     /**
-     * Total time spent - publicly readable, privately writable  
+     * Total time spent - publicly readable, privately writable
      */
     public private(set) float $totalTime = 0.0;
 
@@ -55,7 +53,7 @@ class PerformanceMonitor
      */
     public function endOperation(string $operationId): float
     {
-        if (!isset($this->activeOperations[$operationId])) {
+        if (! isset($this->activeOperations[$operationId])) {
             throw new \InvalidArgumentException("Operation {$operationId} was not started");
         }
 
@@ -94,8 +92,8 @@ class PerformanceMonitor
      */
     public function getAverageTime(): float
     {
-        return $this->totalOperations > 0 
-            ? $this->totalTime / $this->totalOperations 
+        return $this->totalOperations > 0
+            ? $this->totalTime / $this->totalOperations
             : 0.0;
     }
 
@@ -105,6 +103,7 @@ class PerformanceMonitor
     public function getCacheHitRatio(): float
     {
         $total = $this->cacheHits + $this->cacheMisses;
+
         return $total > 0 ? $this->cacheHits / $total : 0.0;
     }
 

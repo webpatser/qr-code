@@ -7,8 +7,6 @@ namespace QR_Code\Contracts;
  *
  * QR Code Generator for PHP is distributed under MIT
  * Copyright (C) 2018 Bruno Vaula Werneck <brunovaulawerneck at gmail dot com>
- *
- * @package QR_Code\Contracts
  */
 interface CodeType
 {
@@ -17,5 +15,5 @@ interface CodeType
      *
      * @return string Code String
      */
-    public function getCodeString () : string;
+    public function getCodeString(): string;
 }

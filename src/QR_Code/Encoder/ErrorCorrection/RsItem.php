@@ -18,28 +18,35 @@ namespace QR_Code\Encoder\ErrorCorrection;
  *
  * QR Code Generator for PHP is distributed under MIT
  * Copyright (C) 2018 Bruno Vaula Werneck <brunovaulawerneck at gmail dot com>
- *
- * @package QR_Code\Encoder\ErrorCorrection
  */
 class RsItem
 {
     public $mm;                  // Bits per symbol
+
     public $nn;                  // Symbols per block (= (1<<mm)-1)
+
     public $alpha_to = [];  // log lookup table
+
     public $index_of = [];  // Antilog lookup table
-    public $genpoly  = [];   // Generator polynomial
+
+    public $genpoly = [];   // Generator polynomial
+
     public $nroots;              // Number of generator roots = number of parity symbols
+
     public $fcr;                 // First consecutive root, index form
+
     public $prim;                // Primitive element, index form
+
     public $iprim;               // prim-th root of 1, index form
+
     public $pad;                 // Padding bytes in shortened block
+
     public $gfpoly;
 
     /**
-     * @param $x
      * @return int
      */
-    public function modnn ($x)
+    public function modnn($x)
     {
         while ($x >= $this->nn) {
             $x -= $this->nn;
@@ -50,15 +57,9 @@ class RsItem
     }
 
     /**
-     * @param $symsize
-     * @param $gfpoly
-     * @param $fcr
-     * @param $prim
-     * @param $nroots
-     * @param $pad
      * @return null|\QR_Code\Encoder\ErrorCorrection\RsItem
      */
-    public static function init_rs_char ($symsize, $gfpoly, $fcr, $prim, $nroots, $pad)
+    public static function init_rs_char($symsize, $gfpoly, $fcr, $prim, $nroots, $pad)
     {
         // Common code for intializing a Reed-Solomon control block (char or int symbols)
         // Copyright 2004 Phil Karn, KA9Q
@@ -67,13 +68,23 @@ class RsItem
         $rs = null;
 
         // Check parameter ranges
-        if ($symsize < 0 || $symsize > 8) return $rs;
-        if ($fcr < 0 || $fcr >= (1 << $symsize)) return $rs;
-        if ($prim <= 0 || $prim >= (1 << $symsize)) return $rs;
-        if ($nroots < 0 || $nroots >= (1 << $symsize)) return $rs; // Can't have more roots than symbol values!
-        if ($pad < 0 || $pad >= ((1 << $symsize) - 1 - $nroots)) return $rs; // Too much padding
+        if ($symsize < 0 || $symsize > 8) {
+            return $rs;
+        }
+        if ($fcr < 0 || $fcr >= (1 << $symsize)) {
+            return $rs;
+        }
+        if ($prim <= 0 || $prim >= (1 << $symsize)) {
+            return $rs;
+        }
+        if ($nroots < 0 || $nroots >= (1 << $symsize)) {
+            return $rs;
+        } // Can't have more roots than symbol values!
+        if ($pad < 0 || $pad >= ((1 << $symsize) - 1 - $nroots)) {
+            return $rs;
+        } // Too much padding
 
-        $rs = new RsItem();
+        $rs = new RsItem;
         $rs->mm = $symsize;
         $rs->nn = (1 << $symsize) - 1;
         $rs->pad = $pad;
@@ -82,8 +93,8 @@ class RsItem
         $rs->index_of = array_fill(0, $rs->nn + 1, 0);
 
         // PHP style macro replacement ;)
-        $NN =& $rs->nn;
-        $A0 =& $NN;
+        $NN = &$rs->nn;
+        $A0 = &$NN;
 
         // Generate Galois field lookup tables
         $rs->index_of[0] = $A0; // log(zero) = -inf
@@ -103,6 +114,7 @@ class RsItem
         if ($sr != 1) {
             // field generator polynomial is not primitive!
             $rs = null;
+
             return $rs;
         }
 
@@ -139,29 +151,26 @@ class RsItem
         }
 
         // convert rs->genpoly[] to index form for quicker encoding
-        for ($i = 0; $i <= $nroots; $i++)
+        for ($i = 0; $i <= $nroots; $i++) {
             $rs->genpoly[$i] = $rs->index_of[$rs->genpoly[$i]];
+        }
 
         return $rs;
     }
 
-    /**
-     * @param $data
-     * @param $parity
-     */
-    public function encode_rs_char ($data, &$parity)
+    public function encode_rs_char($data, &$parity)
     {
-        $MM =& $this->mm;
-        $NN =& $this->nn;
-        $ALPHA_TO =& $this->alpha_to;
-        $INDEX_OF =& $this->index_of;
-        $GENPOLY =& $this->genpoly;
-        $NROOTS =& $this->nroots;
-        $FCR =& $this->fcr;
-        $PRIM =& $this->prim;
-        $IPRIM =& $this->iprim;
-        $PAD =& $this->pad;
-        $A0 =& $NN;
+        $MM = &$this->mm;
+        $NN = &$this->nn;
+        $ALPHA_TO = &$this->alpha_to;
+        $INDEX_OF = &$this->index_of;
+        $GENPOLY = &$this->genpoly;
+        $NROOTS = &$this->nroots;
+        $FCR = &$this->fcr;
+        $PRIM = &$this->prim;
+        $IPRIM = &$this->iprim;
+        $PAD = &$this->pad;
+        $A0 = &$NN;
 
         $parity = array_fill(0, $NROOTS, 0);
 

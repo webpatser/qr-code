@@ -13,40 +13,26 @@ namespace QR_Code\Encoder;
  *
  * QR Code Generator for PHP is distributed under MIT
  * Copyright (C) 2018 Bruno Vaula Werneck <brunovaulawerneck at gmail dot com>
- *
- * @package QR_Code\Encoder
  */
 class BitStream
 {
     public $data = [];
 
-    /**
-     * @return int
-     */
-    public function size () : int
+    public function size(): int
     {
         return count($this->data);
     }
 
-    /**
-     * @param $setLength
-     * @return int
-     */
-    public function allocate ($setLength) : int
+    public function allocate($setLength): int
     {
         $this->data = array_fill(0, $setLength, 0);
 
         return 0;
     }
 
-    /**
-     * @param $bits
-     * @param $num
-     * @return \QR_Code\Encoder\BitStream
-     */
-    public static function newFromNum ($bits, $num) : BitStream
+    public static function newFromNum($bits, $num): BitStream
     {
-        $bitStream = new self();
+        $bitStream = new self;
         $bitStream->allocate($bits);
 
         $mask = 1 << ($bits - 1);
@@ -62,14 +48,9 @@ class BitStream
         return $bitStream;
     }
 
-    /**
-     * @param $size
-     * @param $data
-     * @return \QR_Code\Encoder\BitStream
-     */
-    public static function newFromBytes ($size, $data) : BitStream
+    public static function newFromBytes($size, $data): BitStream
     {
-        $bitStream = new self();
+        $bitStream = new self;
         $bitStream->allocate($size * 8);
         $p = 0;
 
@@ -89,11 +70,7 @@ class BitStream
         return $bitStream;
     }
 
-    /**
-     * @param \QR_Code\Encoder\BitStream $arg
-     * @return int
-     */
-    public function append (self $arg) : int
+    public function append(self $arg): int
     {
         if (is_null($arg)) {
             return -1;
@@ -105,6 +82,7 @@ class BitStream
 
         if ($this->size() == 0) {
             $this->data = $arg->data;
+
             return 0;
         }
 
@@ -113,20 +91,17 @@ class BitStream
         return 0;
     }
 
-    /**
-     * @param $bits
-     * @param $num
-     * @return int
-     */
-    public function appendNum ($bits, $num) : int
+    public function appendNum($bits, $num): int
     {
-        if ($bits == 0)
+        if ($bits == 0) {
             return 0;
+        }
 
         $b = self::newFromNum($bits, $num);
 
-        if (is_null($b))
+        if (is_null($b)) {
             return -1;
+        }
 
         $ret = $this->append($b);
         unset($b);
@@ -134,20 +109,17 @@ class BitStream
         return $ret;
     }
 
-    /**
-     * @param $size
-     * @param $data
-     * @return int
-     */
-    public function appendBytes ($size, $data) : int
+    public function appendBytes($size, $data): int
     {
-        if ($size == 0)
+        if ($size == 0) {
             return 0;
+        }
 
         $b = self::newFromBytes($size, $data);
 
-        if (is_null($b))
+        if (is_null($b)) {
             return -1;
+        }
 
         $ret = $this->append($b);
         unset($b);
@@ -155,10 +127,7 @@ class BitStream
         return $ret;
     }
 
-    /**
-     * @return array
-     */
-    public function toByte () : array
+    public function toByte(): array
     {
         $size = $this->size();
 

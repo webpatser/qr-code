@@ -9,8 +9,6 @@ use QR_Code\Contracts\VCardItem;
  *
  * QR Code Generator for PHP is distributed under MIT
  * Copyright (C) 2018 Bruno Vaula Werneck <brunovaulawerneck at gmail dot com>
- *
- * @package QR_Code\Types\vCard
  */
 class Person implements VCardItem
 {
@@ -18,22 +16,27 @@ class Person implements VCardItem
      * @var string
      */
     protected $firstName;
+
     /**
      * @var string
      */
     protected $lastName;
+
     /**
      * @var string
      */
     protected $title;
+
     /**
      * @var string
      */
     protected $email;
+
     /**
      * @var string
      */
     protected $org;
+
     /**
      * @var string
      */
@@ -41,14 +44,8 @@ class Person implements VCardItem
 
     /**
      * Person constructor.
-     * @param string $firstName
-     * @param string $lastName
-     * @param string $title
-     * @param string $email
-     * @param string $org
-     * @param string $orgTitle
      */
-    public function __construct (string $firstName, string $lastName, string $title = '', string $email, string $org = '', string $orgTitle = '')
+    public function __construct(string $firstName, string $lastName, string $title, string $email, string $org = '', string $orgTitle = '')
     {
         $this->firstName = $firstName;
         $this->lastName = $lastName;
@@ -58,26 +55,17 @@ class Person implements VCardItem
         $this->orgTitle = $orgTitle;
     }
 
-    /**
-     * @return string
-     */
-    public function getEmailStr () : string
+    public function getEmailStr(): string
     {
         return "EMAIL:{$this->email}\n";
     }
 
-    /**
-     * @return string
-     */
-    protected function getFullName () : string
+    protected function getFullName(): string
     {
         return "{$this->firstName} {$this->lastName}";
     }
 
-    /**
-     * @return string
-     */
-    protected function getName () : string
+    protected function getName(): string
     {
         $response = "N:{$this->lastName};{$this->firstName};;";
         if ($this->title) {
@@ -89,10 +77,8 @@ class Person implements VCardItem
 
     /**
      * Gets vCard Item Text
-     *
-     * @return string
      */
-    public function __toString () : string
+    public function __toString(): string
     {
         $response = "{$this->getName()}\n";
         $response .= "FN:{$this->getFullName()}\n";

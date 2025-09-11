@@ -22,7 +22,7 @@
                         $selected = ($matrixPointSize == $i) ? 'selected' : '';
                         echo "<option value=\"{$i}\" {$selected} >{$i}</option>";
                     }
-                    ?>
+                ?>
                 </select>
             </p>
             <p>

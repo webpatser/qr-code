@@ -18,25 +18,21 @@ namespace QR_Code\Encoder\ErrorCorrection;
  *
  * QR Code Generator for PHP is distributed under MIT
  * Copyright (C) 2018 Bruno Vaula Werneck <brunovaulawerneck at gmail dot com>
- *
- * @package QR_Code\Encoder\ErrorCorrection
  */
 class RsBlock
 {
     protected $dataLength;
+
     protected $data = [];
+
     protected $eccLength;
-    protected $ecc  = [];
+
+    protected $ecc = [];
 
     /**
      * RsBlock constructor.
-     * @param                                         $dl
-     * @param                                         $data
-     * @param                                         $el
-     * @param array                                   $ecc
-     * @param \QR_Code\Encoder\ErrorCorrection\RsItem $rs
      */
-    public function __construct ($dl, $data, $el, array &$ecc, RsItem $rs)
+    public function __construct($dl, $data, $el, array &$ecc, RsItem $rs)
     {
         $rs->encode_rs_char($data, $ecc);
 
@@ -47,10 +43,9 @@ class RsBlock
     }
 
     /**
-     * @param string $property
      * @return mixed|null
      */
-    public function __get (string $property)
+    public function __get(string $property)
     {
         if (property_exists($this, $property)) {
             return $this->{$property};

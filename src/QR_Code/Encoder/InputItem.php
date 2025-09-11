@@ -12,14 +12,15 @@ use QR_Code\Config\Specifications;
  *
  * QR Code Generator for PHP is distributed under MIT
  * Copyright (C) 2018 Bruno Vaula Werneck <brunovaulawerneck at gmail dot com>
- *
- * @package QR_Code\Encoder
  */
 class InputItem
 {
     public $mode;
+
     public $size;
+
     public $data;
+
     /**
      * @var \QR_Code\Encoder\BitStream
      */
@@ -27,13 +28,12 @@ class InputItem
 
     /**
      * InputItem constructor.
-     * @param int                        $mode
-     * @param int                        $size
-     * @param mixed                      $data
-     * @param \QR_Code\Encoder\BitStream $bitStream
+     *
+     * @param  mixed  $data
+     *
      * @throws \Exception
      */
-    public function __construct (int $mode, int $size, $data, ?BitStream $bitStream = null)
+    public function __construct(int $mode, int $size, $data, ?BitStream $bitStream = null)
     {
         $setData = array_slice($data, 0, $size);
 
@@ -41,8 +41,8 @@ class InputItem
             $setData = array_merge($setData, array_fill(0, $size - count($setData), 0));
         }
 
-        if (!Input::check($mode, $size, $setData)) {
-            throw new \Exception('Error m:' . $mode . ',s:' . $size . ',d:' . join(',', $setData));
+        if (! Input::check($mode, $size, $setData)) {
+            throw new \Exception('Error m:'.$mode.',s:'.$size.',d:'.implode(',', $setData));
         }
 
         $this->mode = $mode;
@@ -51,16 +51,12 @@ class InputItem
         $this->bitStream = $bitStream;
     }
 
-    /**
-     * @param int $version
-     * @return int
-     */
-    public function encodeModeNum (int $version) : int
+    public function encodeModeNum(int $version): int
     {
         try {
 
             $words = (int) ($this->size / 3);
-            $bs = new BitStream();
+            $bs = new BitStream;
 
             $val = 0x1;
             $bs->appendNum(4, $val);
@@ -83,6 +79,7 @@ class InputItem
             }
 
             $this->bitStream = $bs;
+
             return 0;
 
         } catch (\Exception $e) {
@@ -90,15 +87,11 @@ class InputItem
         }
     }
 
-    /**
-     * @param int $version
-     * @return int
-     */
-    public function encodeModeAn (int $version) : int
+    public function encodeModeAn(int $version): int
     {
         try {
             $words = (int) ($this->size / 2);
-            $bs = new BitStream();
+            $bs = new BitStream;
 
             $bs->appendNum(4, 0x02);
             $bs->appendNum(Specifications::lengthIndicator(QR_MODE_AN, $version), $this->size);
@@ -116,6 +109,7 @@ class InputItem
             }
 
             $this->bitStream = $bs;
+
             return 0;
 
         } catch (\Exception $e) {
@@ -123,14 +117,10 @@ class InputItem
         }
     }
 
-    /**
-     * @param int $version
-     * @return int
-     */
-    public function encodeMode8 (int $version) : int
+    public function encodeMode8(int $version): int
     {
         try {
-            $bs = new BitStream();
+            $bs = new BitStream;
 
             $bs->appendNum(4, 0x4);
             $bs->appendNum(Specifications::lengthIndicator(QR_MODE_8, $version), $this->size);
@@ -140,6 +130,7 @@ class InputItem
             }
 
             $this->bitStream = $bs;
+
             return 0;
 
         } catch (\Exception $e) {
@@ -147,34 +138,31 @@ class InputItem
         }
     }
 
-    /**
-     * @param int $version
-     * @return int
-     */
-    public function encodeModeKanji (int $version) : int
+    public function encodeModeKanji(int $version): int
     {
         try {
 
-            $bs = new BitStream();
+            $bs = new BitStream;
 
             $bs->appendNum(4, 0x8);
             $bs->appendNum(Specifications::lengthIndicator(QR_MODE_KANJI, $version), (int) ($this->size / 2));
 
             for ($i = 0; $i < $this->size; $i += 2) {
                 $val = (ord($this->data[$i]) << 8) | ord($this->data[$i + 1]);
-                if ($val <= 0x9ffc) {
+                if ($val <= 0x9FFC) {
                     $val -= 0x8140;
                 } else {
-                    $val -= 0xc140;
+                    $val -= 0xC140;
                 }
 
-                $h = ($val >> 8) * 0xc0;
-                $val = ($val & 0xff) + $h;
+                $h = ($val >> 8) * 0xC0;
+                $val = ($val & 0xFF) + $h;
 
                 $bs->appendNum(13, $val);
             }
 
             $this->bitStream = $bs;
+
             return 0;
 
         } catch (\Exception $e) {
@@ -182,13 +170,10 @@ class InputItem
         }
     }
 
-    /**
-     * @return int
-     */
-    public function encodeModeStructure () : int
+    public function encodeModeStructure(): int
     {
         try {
-            $bs = new BitStream();
+            $bs = new BitStream;
 
             $bs->appendNum(4, 0x03);
             $bs->appendNum(4, ord($this->data[1]) - 1);
@@ -196,6 +181,7 @@ class InputItem
             $bs->appendNum(8, ord($this->data[2]));
 
             $this->bitStream = $bs;
+
             return 0;
 
         } catch (\Exception $e) {
@@ -204,13 +190,13 @@ class InputItem
     }
 
     /**
-     * @param int $version
      * @return float|int
      */
-    public function estimateBitStreamSizeOfEntry (int $version)
+    public function estimateBitStreamSizeOfEntry(int $version)
     {
-        if ($version == 0)
+        if ($version == 0) {
             $version = 1;
+        }
 
         switch ($this->mode) {
             case QR_MODE_NUM:
@@ -240,11 +226,7 @@ class InputItem
         return $bits;
     }
 
-    /**
-     * @param int $version
-     * @return int
-     */
-    public function encodeBitStream (int $version) : int
+    public function encodeBitStream(int $version): int
     {
         try {
             unset($this->bitStream);
@@ -258,7 +240,7 @@ class InputItem
                 $st1->encodeBitStream($version);
                 $st2->encodeBitStream($version);
 
-                $this->bitStream = new BitStream();
+                $this->bitStream = new BitStream;
                 $this->bitStream->append($st1->bitStream);
                 $this->bitStream->append($st2->bitStream);
 
@@ -290,8 +272,9 @@ class InputItem
                         break;
                 }
 
-                if ($ret < 0)
+                if ($ret < 0) {
                     return -1;
+                }
             }
 
             return $this->bitStream->size();

@@ -6,17 +6,21 @@ use QR_Code\Enums\ErrorCorrectionLevel;
 
 /**
  * Modern QR Configuration for PHP 8.2+
- * 
- * @package QR_Code\Config
  */
 class ModernQRConfig
 {
     private ErrorCorrectionLevel $errorCorrectionLevel = ErrorCorrectionLevel::Low;
+
     private int $size = 3;
+
     private int $margin = 4;
+
     private int $backgroundColor;
+
     private int $foregroundColor;
+
     private bool $saveAndPrint = false;
+
     private int $version = 0;
 
     public function __construct()
@@ -39,6 +43,7 @@ class ModernQRConfig
     public function setErrorCorrectionLevel(ErrorCorrectionLevel $errorCorrectionLevel): self
     {
         $this->errorCorrectionLevel = $errorCorrectionLevel;
+
         return $this;
     }
 
@@ -59,6 +64,7 @@ class ModernQRConfig
             throw new \InvalidArgumentException('Size must be between 1 and 50');
         }
         $this->size = $size;
+
         return $this;
     }
 
@@ -79,6 +85,7 @@ class ModernQRConfig
             throw new \InvalidArgumentException('Margin must be between 0 and 20');
         }
         $this->margin = $margin;
+
         return $this;
     }
 
@@ -99,6 +106,7 @@ class ModernQRConfig
             throw new \InvalidArgumentException('Invalid background color value');
         }
         $this->backgroundColor = $backgroundColor;
+
         return $this;
     }
 
@@ -119,6 +127,7 @@ class ModernQRConfig
             throw new \InvalidArgumentException('Invalid foreground color value');
         }
         $this->foregroundColor = $foregroundColor;
+
         return $this;
     }
 
@@ -136,6 +145,7 @@ class ModernQRConfig
     public function setSaveAndPrint(bool $saveAndPrint): self
     {
         $this->saveAndPrint = $saveAndPrint;
+
         return $this;
     }
 
@@ -156,13 +166,14 @@ class ModernQRConfig
             throw new \InvalidArgumentException('Version must be between 0 and 40');
         }
         $this->version = $version;
+
         return $this;
     }
 
     // Legacy property access for backward compatibility
     public function __get(string $property): mixed
     {
-        return match($property) {
+        return match ($property) {
             'errorCorrectionLevel' => $this->errorCorrectionLevel,
             'size' => $this->size,
             'margin' => $this->margin,
@@ -176,7 +187,7 @@ class ModernQRConfig
 
     public function __set(string $property, mixed $value): void
     {
-        match($property) {
+        match ($property) {
             'errorCorrectionLevel' => $this->setErrorCorrectionLevel($value),
             'size' => $this->setSize($value),
             'margin' => $this->setMargin($value),
@@ -201,13 +212,28 @@ class ModernQRConfig
         ?int $version = null,
     ): self {
         $new = clone $this;
-        if ($errorCorrectionLevel !== null) $new->setErrorCorrectionLevel($errorCorrectionLevel);
-        if ($size !== null) $new->setSize($size);
-        if ($margin !== null) $new->setMargin($margin);
-        if ($backgroundColor !== null) $new->setBackgroundColor($backgroundColor);
-        if ($foregroundColor !== null) $new->setForegroundColor($foregroundColor);
-        if ($saveAndPrint !== null) $new->setSaveAndPrint($saveAndPrint);
-        if ($version !== null) $new->setVersion($version);
+        if ($errorCorrectionLevel !== null) {
+            $new->setErrorCorrectionLevel($errorCorrectionLevel);
+        }
+        if ($size !== null) {
+            $new->setSize($size);
+        }
+        if ($margin !== null) {
+            $new->setMargin($margin);
+        }
+        if ($backgroundColor !== null) {
+            $new->setBackgroundColor($backgroundColor);
+        }
+        if ($foregroundColor !== null) {
+            $new->setForegroundColor($foregroundColor);
+        }
+        if ($saveAndPrint !== null) {
+            $new->setSaveAndPrint($saveAndPrint);
+        }
+        if ($version !== null) {
+            $new->setVersion($version);
+        }
+
         return $new;
     }
 
@@ -232,23 +258,25 @@ class ModernQRConfig
      */
     public static function default(): self
     {
-        return new self();
+        return new self;
     }
 
     public static function highQuality(): self
     {
-        $config = new self();
+        $config = new self;
+
         return $config->setErrorCorrectionLevel(ErrorCorrectionLevel::High)
-                     ->setSize(5)
-                     ->setMargin(4);
+            ->setSize(5)
+            ->setMargin(4);
     }
 
     public static function compact(): self
     {
-        $config = new self();
+        $config = new self;
+
         return $config->setErrorCorrectionLevel(ErrorCorrectionLevel::Low)
-                     ->setSize(2)
-                     ->setMargin(1);
+            ->setSize(2)
+            ->setMargin(1);
     }
 
     public static function create(
@@ -260,13 +288,14 @@ class ModernQRConfig
         bool $saveAndPrint = false,
         int $version = 0,
     ): self {
-        $config = new self();
+        $config = new self;
+
         return $config->setErrorCorrectionLevel($errorCorrectionLevel)
-                     ->setSize($size)
-                     ->setMargin($margin)
-                     ->setBackgroundColor($backgroundColor)
-                     ->setForegroundColor($foregroundColor)
-                     ->setSaveAndPrint($saveAndPrint)
-                     ->setVersion($version);
+            ->setSize($size)
+            ->setMargin($margin)
+            ->setBackgroundColor($backgroundColor)
+            ->setForegroundColor($foregroundColor)
+            ->setSaveAndPrint($saveAndPrint)
+            ->setVersion($version);
     }
 }

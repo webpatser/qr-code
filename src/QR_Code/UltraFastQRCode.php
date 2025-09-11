@@ -4,30 +4,32 @@ namespace QR_Code;
 
 use QR_Code\Cache\CacheInterface;
 use QR_Code\Cache\MemoryCache;
-use QR_Code\Enums\ImageEngine;
-use QR_Code\Enums\ErrorCorrectionLevel;
-use QR_Code\Renderer\ImageRenderer;
 use QR_Code\Config\ModernQRConfig;
+use QR_Code\Enums\ImageEngine;
 use QR_Code\Performance\PerformanceMonitor;
+use QR_Code\Renderer\ImageRenderer;
 use QR_Code\Util\ArrayOptimizer;
 
 /**
  * Ultra-fast QR Code generator optimized for PHP 8.2+
- * 
- * @package QR_Code
  */
 class UltraFastQRCode
 {
     private CacheInterface $cache;
+
     private ImageEngine $preferredEngine;
+
     private bool $enableCache;
+
     private PerformanceMonitor $monitor;
 
     /**
      * Statistics - private properties with public getters for PHP 8.2 compatibility
      */
     private int $generatedCount = 0;
+
     private float $totalTime = 0.0;
+
     private int $cacheHitCount = 0;
 
     public function __construct(
@@ -39,7 +41,7 @@ class UltraFastQRCode
         $this->cache = $cache ?? new MemoryCache(2000); // Larger cache for PHP 8.4
         $this->preferredEngine = $preferredEngine ?? ImageEngine::detectBest();
         $this->enableCache = $enableCache;
-        $this->monitor = $enableMonitoring ? new PerformanceMonitor() : null;
+        $this->monitor = $enableMonitoring ? new PerformanceMonitor : null;
     }
 
     /**
@@ -51,21 +53,22 @@ class UltraFastQRCode
         ?string $filename = null,
         string $format = 'png'
     ): string {
-        $operationId = 'generate_' . uniqid();
+        $operationId = 'generate_'.uniqid();
         $this->monitor?->startOperation($operationId);
 
         $config ??= ModernQRConfig::default();
-        
+
         // Generate cache key using PHP 8.4 optimized hashing
         $cacheKey = $this->generateOptimizedCacheKey($data, $config, $format);
-        
+
         // Check cache first
-        if ($this->enableCache && !$filename) {
+        if ($this->enableCache && ! $filename) {
             $cached = $this->cache->get($cacheKey);
             if ($cached !== null) {
                 $this->cacheHitCount++;
                 $this->monitor?->recordCacheHit();
                 $this->monitor?->endOperation($operationId);
+
                 return $cached;
             }
             $this->monitor?->recordCacheMiss();
@@ -74,14 +77,14 @@ class UltraFastQRCode
         // Generate QR matrix with optimizations
         $matrixCacheKey = $this->generateMatrixCacheKey($data, $config);
         $matrix = null;
-        
+
         if ($this->enableCache) {
             $matrix = $this->cache->get($matrixCacheKey);
         }
-        
+
         if ($matrix === null) {
             $matrix = $this->generateOptimizedMatrix($data, $config);
-            
+
             if ($this->enableCache) {
                 // Compress matrix for better cache efficiency
                 $compressed = ArrayOptimizer::compressMatrix($matrix);
@@ -97,17 +100,17 @@ class UltraFastQRCode
 
         // Render using optimized renderer
         $result = $this->renderMatrix($matrix, $config, $filename, $format);
-        
+
         // Cache result if no filename
-        if ($this->enableCache && !$filename) {
+        if ($this->enableCache && ! $filename) {
             $this->cache->set($cacheKey, $result, 1800);
         }
-        
+
         // Update statistics using asymmetric visibility
         $this->generatedCount++;
         $duration = $this->monitor?->endOperation($operationId) ?? 0.0;
         $this->totalTime += $duration;
-        
+
         return $result;
     }
 
@@ -117,9 +120,9 @@ class UltraFastQRCode
     public function batchGenerate(array $items, ?ModernQRConfig $config = null): array
     {
         $config ??= ModernQRConfig::default();
-        
+
         // Use PHP 8.4 array optimizations for batch processing
-        return ArrayOptimizer::batchProcess($items, function($data) use ($config) {
+        return ArrayOptimizer::batchProcess($items, function ($data) use ($config) {
             return $this->generate($data, $config);
         });
     }
@@ -131,16 +134,16 @@ class UltraFastQRCode
     {
         $config ??= ModernQRConfig::default();
         $warmed = 0;
-        
+
         foreach ($data as $item) {
             $cacheKey = $this->generateOptimizedCacheKey($item, $config, 'png');
-            
-            if (!$this->cache->has($cacheKey)) {
+
+            if (! $this->cache->has($cacheKey)) {
                 $this->generate($item, $config);
                 $warmed++;
             }
         }
-        
+
         return $warmed;
     }
 
@@ -173,8 +176,8 @@ class UltraFastQRCode
      */
     public function getAverageTime(): float
     {
-        return $this->generatedCount > 0 
-            ? $this->totalTime / $this->generatedCount 
+        return $this->generatedCount > 0
+            ? $this->totalTime / $this->generatedCount
             : 0.0;
     }
 
@@ -183,8 +186,8 @@ class UltraFastQRCode
      */
     public function getCacheHitRatio(): float
     {
-        return $this->generatedCount > 0 
-            ? $this->cacheHitCount / $this->generatedCount 
+        return $this->generatedCount > 0
+            ? $this->cacheHitCount / $this->generatedCount
             : 0.0;
     }
 
@@ -224,10 +227,10 @@ class UltraFastQRCode
             'bg' => $config->getBackgroundColor(),
             'fg' => $config->getForegroundColor(),
             'f' => $format,
-            'e' => $this->preferredEngine->value
+            'e' => $this->preferredEngine->value,
         ];
-        
-        return 'qr82_' . hash('sha256', serialize($keyData));
+
+        return 'qr82_'.hash('sha256', serialize($keyData));
     }
 
     /**
@@ -240,8 +243,8 @@ class UltraFastQRCode
             'ec' => $config->getErrorCorrectionLevel()->value,
             'v' => $config->getVersion(),
         ];
-        
-        return 'mat82_' . hash('sha256', serialize($keyData));
+
+        return 'mat82_'.hash('sha256', serialize($keyData));
     }
 
     /**
@@ -256,9 +259,9 @@ class UltraFastQRCode
             $config->getBackgroundColor(),
             $config->getForegroundColor()
         );
-        
+
         $matrix = $encoder->encode($data);
-        
+
         // Optimize matrix using PHP 8.4 array functions
         return ArrayOptimizer::optimizeMatrix($matrix);
     }
@@ -271,12 +274,12 @@ class UltraFastQRCode
         // Estimate size based on data length and error correction
         $dataLength = strlen($data);
         $baseSizes = [21, 25, 29, 33, 37, 41, 45, 49, 53, 57];
-        
+
         $estimatedIndex = min(
             floor($dataLength / 10) + $config->getErrorCorrectionLevel()->value,
             count($baseSizes) - 1
         );
-        
+
         return $baseSizes[$estimatedIndex] ?? 57;
     }
 
@@ -290,12 +293,12 @@ class UltraFastQRCode
         string $format
     ): string {
         // Validate matrix before rendering
-        if (!ArrayOptimizer::validateMatrix($matrix)) {
+        if (! ArrayOptimizer::validateMatrix($matrix)) {
             throw new \InvalidArgumentException('Invalid QR code matrix');
         }
 
-        $engine = $this->preferredEngine->isAvailable() 
-            ? $this->preferredEngine 
+        $engine = $this->preferredEngine->isAvailable()
+            ? $this->preferredEngine
             : ImageEngine::detectBest();
 
         $renderer = ImageRenderer::create(

@@ -1,4 +1,5 @@
 <?php
+
 namespace QR_Code\Exceptions;
 
 /**
@@ -6,10 +7,5 @@ namespace QR_Code\Exceptions;
  *
  * QR Code Generator for PHP is distributed under MIT
  * Copyright (C) 2018 Bruno Vaula Werneck <brunovaulawerneck at gmail dot com>
- *
- * @package QR_Code\Exceptions
  */
-class InvalidEventDateException extends \Exception
-{
-
-}
+class InvalidEventDateException extends \Exception {}

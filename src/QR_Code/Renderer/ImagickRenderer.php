@@ -2,12 +2,8 @@
 
 namespace QR_Code\Renderer;
 
-use QR_Code\Enums\ImageEngine;
-
 /**
  * High-performance ImageMagick renderer
- * 
- * @package QR_Code\Renderer
  */
 class ImagickRenderer extends ImageRenderer
 {
@@ -22,13 +18,13 @@ class ImagickRenderer extends ImageRenderer
         $margin = $dimensions['margin'];
 
         // Create ImageMagick canvas
-        $imagick = new \Imagick();
+        $imagick = new \Imagick;
         $bgColor = $this->colorToHex($this->backgroundColor);
         $imagick->newImage($totalSize, $totalSize, $bgColor);
         $imagick->setImageFormat('png');
 
         // Create drawing object for efficient batch operations
-        $draw = new \ImagickDraw();
+        $draw = new \ImagickDraw;
         $draw->setFillColor($this->colorToHex($this->foregroundColor));
         $draw->setStrokeColor('none');
 
@@ -58,7 +54,7 @@ class ImagickRenderer extends ImageRenderer
             $imagick->writeImage($filename);
             $result = $filename;
         } else {
-            $result = 'data:image/png;base64,' . base64_encode($imagick->getImageBlob());
+            $result = 'data:image/png;base64,'.base64_encode($imagick->getImageBlob());
         }
 
         $imagick->clear();
@@ -99,10 +95,11 @@ class ImagickRenderer extends ImageRenderer
             }
         }
 
-        $svg .= implode("\n", $rects) . "\n</svg>";
+        $svg .= implode("\n", $rects)."\n</svg>";
 
         if ($filename !== null) {
             file_put_contents($filename, $svg);
+
             return $filename;
         }
 

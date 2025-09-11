@@ -10,24 +10,25 @@ namespace QR_Code\Util;
  *
  * QR Code Generator for PHP is distributed under MIT
  * Copyright (C) 2018 Bruno Vaula Werneck <brunovaulawerneck at gmail dot com>
- *
- * @package QR_Code\Util
  */
 class FrameFiller
 {
     public $width;
+
     public $frame;
+
     public $x;
+
     public $y;
+
     public $dir;
+
     public $bit;
 
     /**
      * FrameFiller constructor.
-     * @param int   $width
-     * @param array $frame
      */
-    public function __construct (int $width, array &$frame)
+    public function __construct(int $width, array &$frame)
     {
         $this->width = $width;
         $this->frame = $frame;
@@ -37,20 +38,12 @@ class FrameFiller
         $this->bit = -1;
     }
 
-    /**
-     * @param $at
-     * @param $val
-     */
-    public function setFrameAt ($at, $val) : void
+    public function setFrameAt($at, $val): void
     {
         $this->frame[$at['y']][$at['x']] = chr($val);
     }
 
-    /**
-     * @param $at
-     * @return int
-     */
-    public function getFrameAt ($at) : int
+    public function getFrameAt($at): int
     {
         return ord($this->frame[$at['y']][$at['x']]);
     }
@@ -58,12 +51,13 @@ class FrameFiller
     /**
      * @return array|null
      */
-    public function next ()
+    public function next()
     {
         do {
 
             if ($this->bit == -1) {
                 $this->bit = 0;
+
                 return ['x' => $this->x, 'y' => $this->y];
             }
 
@@ -101,7 +95,9 @@ class FrameFiller
                     }
                 }
             }
-            if ($x < 0 || $y < 0) return null;
+            if ($x < 0 || $y < 0) {
+                return null;
+            }
 
             $this->x = $x;
             $this->y = $y;

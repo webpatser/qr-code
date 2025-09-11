@@ -12,26 +12,24 @@ use QR_Code\Util\AbstractGenerator;
  *
  * QR Code Generator for PHP is distributed under MIT
  * Copyright (C) 2018 Bruno Vaula Werneck <brunovaulawerneck at gmail dot com>
- *
- * @package QR_Code\Types
  */
 class QR_CalendarEvent extends AbstractGenerator implements CodeType
 {
     const DATETIME_FORMAT = 'Ymd\THis\Z';
 
     protected $dateTimeStart;
+
     protected $dateTimeEnd;
+
     protected $summary;
+
     protected $description;
+
     protected $location;
 
     /**
      * QR_CalendarEvent constructor.
-     * @param \DateTime $dateTimeStart
-     * @param \DateTime $dateTimeEnd
-     * @param string    $summary
-     * @param string    $description
-     * @param string    $location
+     *
      * @throws \QR_Code\Exceptions\EmptyEventSummaryException
      * @throws \QR_Code\Exceptions\InvalidEventDateException
      */
@@ -46,33 +44,21 @@ class QR_CalendarEvent extends AbstractGenerator implements CodeType
         $this->location = $location;
     }
 
-    /**
-     * @param \DateTime $start
-     * @param \DateTime $end
-     * @return bool
-     */
-    protected function validateDateTimeEnd (\DateTime $start, \DateTime $end) : bool
+    protected function validateDateTimeEnd(\DateTime $start, \DateTime $end): bool
     {
         return $end > $start;
     }
 
-    /**
-     * @param string $summary
-     * @return bool
-     */
-    protected function validateSummary (string $summary) : bool
+    protected function validateSummary(string $summary): bool
     {
         return trim($summary) !== '';
     }
 
     /**
-     * @param \DateTime $start
-     * @param \DateTime $end
-     * @param string    $summary
      * @throws \QR_Code\Exceptions\EmptyEventSummaryException
      * @throws \QR_Code\Exceptions\InvalidEventDateException
      */
-    protected function validate (\DateTime $start, \DateTime $end, string $summary) : void
+    protected function validate(\DateTime $start, \DateTime $end, string $summary): void
     {
         if ($this->validateDateTimeEnd($start, $end) === false) {
             throw new InvalidEventDateException('Event end date and time must be higher than Event start');
@@ -85,17 +71,15 @@ class QR_CalendarEvent extends AbstractGenerator implements CodeType
 
     /**
      * Get Formatted QR Code String
-     *
-     * @return string
      */
-    public function getCodeString() : string
+    public function getCodeString(): string
     {
         $response = "BEGIN:VCALENDAR\n";
         $response .= "VERSION:1.0\n";
         $response .= "BEGIN:VEVENT\n";
 
-        $response .= "DTSTART:" . $this->dateTimeStart->format(self::DATETIME_FORMAT) . "\n";
-        $response .= "DTEND:" . $this->dateTimeEnd->format(self::DATETIME_FORMAT) . "\n";
+        $response .= 'DTSTART:'.$this->dateTimeStart->format(self::DATETIME_FORMAT)."\n";
+        $response .= 'DTEND:'.$this->dateTimeEnd->format(self::DATETIME_FORMAT)."\n";
 
         $response .= "SUMMARY:{$this->summary}\n";
         if ($this->description) {
@@ -106,7 +90,7 @@ class QR_CalendarEvent extends AbstractGenerator implements CodeType
         }
 
         $response .= "END:VEVENT\n";
-        $response .= "END:VCALENDAR";
+        $response .= 'END:VCALENDAR';
 
         return $response;
     }

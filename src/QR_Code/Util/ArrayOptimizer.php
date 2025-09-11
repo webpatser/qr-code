@@ -4,8 +4,6 @@ namespace QR_Code\Util;
 
 /**
  * Array optimization utilities using PHP 8.2+ features
- * 
- * @package QR_Code\Util
  */
 class ArrayOptimizer
 {
@@ -17,9 +15,9 @@ class ArrayOptimizer
         // Check if all rows are strings for optimization
         $allStrings = true;
         $hasArrays = false;
-        
+
         foreach ($matrix as $row) {
-            if (!is_string($row)) {
+            if (! is_string($row)) {
                 $allStrings = false;
                 $hasArrays = true;
                 break;
@@ -33,7 +31,7 @@ class ArrayOptimizer
 
         if ($hasArrays) {
             // Mixed types detected, normalize
-            return array_map(fn($row) => is_string($row) ? $row : implode('', $row), $matrix);
+            return array_map(fn ($row) => is_string($row) ? $row : implode('', $row), $matrix);
         }
 
         return $matrix;
@@ -45,7 +43,7 @@ class ArrayOptimizer
     public static function countBlackModules(array $matrix): int
     {
         $count = 0;
-        
+
         foreach ($matrix as $row) {
             if (is_string($row)) {
                 // Use substr_count for string rows (PHP 8.4 optimized)
@@ -56,7 +54,7 @@ class ArrayOptimizer
                 $count += $values[1] ?? 0;
             }
         }
-        
+
         return $count;
     }
 
@@ -79,7 +77,7 @@ class ArrayOptimizer
             'g' => ($backgroundColor >> 8) & 0xFF,
             'b' => $backgroundColor & 0xFF,
         ];
-        
+
         $fg = [
             'r' => ($foregroundColor >> 16) & 0xFF,
             'g' => ($foregroundColor >> 8) & 0xFF,
@@ -88,12 +86,12 @@ class ArrayOptimizer
 
         // Use array_combine with range for efficient palette generation
         $steps = range(0, 255, 51); // 6 levels for web-safe colors
-        
+
         return [
             'background' => $bg,
             'foreground' => $fg,
             'palette' => array_map(
-                fn($r, $g, $b) => ($r << 16) | ($g << 8) | $b,
+                fn ($r, $g, $b) => ($r << 16) | ($g << 8) | $b,
                 array_fill(0, count($steps), $bg['r']),
                 array_fill(0, count($steps), $bg['g']),
                 $steps
@@ -115,7 +113,7 @@ class ArrayOptimizer
                 $binary .= implode('', $row);
             }
         }
-        
+
         // Use gzcompress with level 6 for good compression/speed balance
         return gzcompress($binary, 6);
     }
@@ -127,11 +125,11 @@ class ArrayOptimizer
     {
         $binary = gzuncompress($compressed);
         $matrix = [];
-        
+
         for ($i = 0; $i < $size; $i++) {
             $matrix[] = substr($binary, $i * $size, $size);
         }
-        
+
         return $matrix;
     }
 
@@ -142,7 +140,7 @@ class ArrayOptimizer
     {
         // Check if matrix is square
         $size = count($matrix);
-        
+
         // Validate each row for PHP 8.2 compatibility
         foreach ($matrix as $row) {
             if (is_string($row) && strlen($row) !== $size) {
@@ -152,7 +150,7 @@ class ArrayOptimizer
                 return false;
             }
         }
-        
+
         return true;
     }
 
@@ -164,13 +162,13 @@ class ArrayOptimizer
         if ($degrees % 90 !== 0) {
             throw new \InvalidArgumentException('Rotation must be in 90-degree increments');
         }
-        
+
         $rotations = ($degrees / 90) % 4;
-        
+
         for ($i = 0; $i < $rotations; $i++) {
             $matrix = self::rotateMatrix90($matrix);
         }
-        
+
         return $matrix;
     }
 
@@ -181,19 +179,19 @@ class ArrayOptimizer
     {
         $size = count($matrix);
         $rotated = array_fill(0, $size, array_fill(0, $size, '0'));
-        
+
         for ($i = 0; $i < $size; $i++) {
             for ($j = 0; $j < $size; $j++) {
                 $value = is_string($matrix[$i]) ? $matrix[$i][$j] : $matrix[$i][$j];
                 $rotated[$j][$size - 1 - $i] = $value;
             }
         }
-        
+
         // Convert back to string format if original was strings
         if (is_string($matrix[0])) {
             return array_map('implode', $rotated);
         }
-        
+
         return $rotated;
     }
 }

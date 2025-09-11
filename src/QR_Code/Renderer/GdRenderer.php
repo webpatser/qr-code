@@ -2,12 +2,8 @@
 
 namespace QR_Code\Renderer;
 
-use QR_Code\Enums\ImageEngine;
-
 /**
  * Optimized GD renderer with performance improvements
- * 
- * @package QR_Code\Renderer
  */
 class GdRenderer extends ImageRenderer
 {
@@ -23,14 +19,14 @@ class GdRenderer extends ImageRenderer
 
         // Create image with true color for better performance
         $image = imagecreatetruecolor($totalSize, $totalSize);
-        if (!$image) {
+        if (! $image) {
             throw new \RuntimeException('Failed to create GD image');
         }
 
         // Allocate colors
         $bgRGB = $this->colorToRGB($this->backgroundColor);
         $fgRGB = $this->colorToRGB($this->foregroundColor);
-        
+
         $bgColor = imagecolorallocate($image, $bgRGB['r'], $bgRGB['g'], $bgRGB['b']);
         $fgColor = imagecolorallocate($image, $fgRGB['r'], $fgRGB['g'], $fgRGB['b']);
 
@@ -65,7 +61,7 @@ class GdRenderer extends ImageRenderer
                         $y1 = $margin + $row * $moduleSize;
                         $x2 = $x1 + $moduleSize - 1;
                         $y2 = $y1 + $moduleSize - 1;
-                        
+
                         imagefilledrectangle($image, $x1, $y1, $x2, $y2, $fgColor);
                     }
                 }
@@ -75,7 +71,7 @@ class GdRenderer extends ImageRenderer
         // Output handling
         if ($filename !== null) {
             $success = imagepng($image, $filename, 6); // Compression level 6 for good balance
-            if (!$success) {
+            if (! $success) {
                 imagedestroy($image);
                 throw new \RuntimeException('Failed to save PNG image');
             }
@@ -84,10 +80,11 @@ class GdRenderer extends ImageRenderer
             ob_start();
             imagepng($image, null, 6);
             $imageData = ob_get_clean();
-            $result = 'data:image/png;base64,' . base64_encode($imageData);
+            $result = 'data:image/png;base64,'.base64_encode($imageData);
         }
 
         imagedestroy($image);
+
         return $result;
     }
 
@@ -121,10 +118,11 @@ class GdRenderer extends ImageRenderer
             }
         }
 
-        $svg .= implode("\n", $rects) . "\n</svg>";
+        $svg .= implode("\n", $rects)."\n</svg>";
 
         if ($filename !== null) {
             file_put_contents($filename, $svg);
+
             return $filename;
         }
 

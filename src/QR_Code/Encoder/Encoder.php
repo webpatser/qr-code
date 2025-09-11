@@ -15,45 +15,44 @@ use QR_Code\Util\Tools;
  *
  * QR Code Generator for PHP is distributed under MIT
  * Copyright (C) 2018 Bruno Vaula Werneck <brunovaulawerneck at gmail dot com>
- *
- * @package QR_Code\Encoder
  */
 class Encoder
 {
     public $caseSensitive = true;
-    public $eightBit      = false;
 
-    public $version   = 0;
-    public $size      = 3;
-    public $margin    = 4;
+    public $eightBit = false;
+
+    public $version = 0;
+
+    public $size = 3;
+
+    public $margin = 4;
+
     public $backColor = QR_WHITE;
+
     public $foreColor = QR_BLACK;
-    public $cmyk      = false;
+
+    public $cmyk = false;
 
     public $structured = 0; // not supported yet
 
     public $level = QR_ECLEVEL_L;
-    public $hint  = QR_MODE_8;
+
+    public $hint = QR_MODE_8;
 
     /**
-     * @param int|string $level
-     * @param int        $size
-     * @param int        $margin
-     * @param int        $backColor
-     * @param int        $foreColor
-     * @param bool       $cmyk
-     * @return \QR_Code\Encoder\Encoder
+     * @param  int|string  $level
      */
-    public static function factory ($level = QR_ECLEVEL_L, int $size = 3, int $margin = 4, int $backColor = QR_WHITE, int $foreColor = QR_BLACK, bool $cmyk = false) : Encoder
+    public static function factory($level = QR_ECLEVEL_L, int $size = 3, int $margin = 4, int $backColor = QR_WHITE, int $foreColor = QR_BLACK, bool $cmyk = false): Encoder
     {
-        $enc = new self();
+        $enc = new self;
         $enc->size = $size;
         $enc->margin = $margin;
         $enc->foreColor = $foreColor;
         $enc->backColor = $backColor;
         $enc->cmyk = $cmyk;
 
-        switch ($level . '') {
+        switch ($level.'') {
             case '0':
             case '1':
             case '2':
@@ -82,14 +81,14 @@ class Encoder
     }
 
     /**
-     * @param string      $inText
-     * @param string|bool $outfile
+     * @param  string|bool  $outfile
      * @return mixed
+     *
      * @throws \Exception
      */
-    public function encodeRAW (string $inText, $outfile = false)
+    public function encodeRAW(string $inText, $outfile = false)
     {
-        $code = new QR_Code();
+        $code = new QR_Code;
 
         if ($this->eightBit) {
             $code->encodeString8bit($inText, $this->version, $this->level);
@@ -98,21 +97,22 @@ class Encoder
         }
 
         if ($outfile !== false) {
-            file_put_contents($outfile, join("\n", Tools::binarize($code->data)));
+            file_put_contents($outfile, implode("\n", Tools::binarize($code->data)));
         }
 
         return $code->data;
     }
 
     /**
-     * @param string      $inText  Information to encode
-     * @param bool|string $outfile filename to save encoded data
+     * @param  string  $inText  Information to encode
+     * @param  bool|string  $outfile  filename to save encoded data
      * @return array Encoded Array
+     *
      * @throws \Exception
      */
-    public function encode (string $inText, $outfile = false) : array
+    public function encode(string $inText, $outfile = false): array
     {
-        $code = new QR_Code();
+        $code = new QR_Code;
 
         if ($this->eightBit) {
             $code->encodeString8bit($inText, $this->version, $this->level);
@@ -123,7 +123,7 @@ class Encoder
         Benchmark::mark('after_encode');
 
         if ($outfile !== false) {
-            file_put_contents($outfile, join("\n", Tools::binarize($code->data)));
+            file_put_contents($outfile, implode("\n", Tools::binarize($code->data)));
 
         }
 
@@ -131,16 +131,14 @@ class Encoder
     }
 
     /**
-     * @param string      $inText
-     * @param string|bool $outfile
-     * @param bool        $saveAndPrint
+     * @param  string|bool  $outfile
+     * @param  bool  $saveAndPrint
      */
-    public function encodePNG (string $inText, $outfile = false, $saveAndPrint = false) : string
+    public function encodePNG(string $inText, $outfile = false, $saveAndPrint = false): string
     {
         try {
 
             $tab = $this->encode($inText);
-
 
             $maxSize = (int) (QR_PNG_MAXIMUM_SIZE / (count($tab) + 2 * $this->margin));
 
@@ -150,16 +148,14 @@ class Encoder
 
             Logger::log($outfile, $e->getMessage());
             throw $e;
-
         }
     }
 
     /**
-     * @param string      $inText
-     * @param string|bool $outfile
-     * @param bool        $saveAndPrint
+     * @param  string|bool  $outfile
+     * @param  bool  $saveAndPrint
      */
-    public function encodeEPS (string $inText, $outfile = false, $saveAndPrint = false) : void
+    public function encodeEPS(string $inText, $outfile = false, $saveAndPrint = false): void
     {
         try {
 
@@ -168,7 +164,9 @@ class Encoder
             $err = ob_get_contents();
             ob_end_clean();
 
-            if ($err != '') Logger::log($outfile, $err);
+            if ($err != '') {
+                Logger::log($outfile, $err);
+            }
 
             $maxSize = (int) (QR_PNG_MAXIMUM_SIZE / (count($tab) + 2 * $this->margin));
 
@@ -182,11 +180,10 @@ class Encoder
     }
 
     /**
-     * @param string      $inText
-     * @param string|bool $outfile
-     * @param bool        $saveAndPrint
+     * @param  string|bool  $outfile
+     * @param  bool  $saveAndPrint
      */
-    public function encodeSVG (string $inText, $outfile = false, $saveAndPrint = false) : void
+    public function encodeSVG(string $inText, $outfile = false, $saveAndPrint = false): void
     {
         try {
 
@@ -195,7 +192,9 @@ class Encoder
             $err = ob_get_contents();
             ob_end_clean();
 
-            if ($err != '') Logger::log($outfile, $err);
+            if ($err != '') {
+                Logger::log($outfile, $err);
+            }
 
             $maxSize = (int) (QR_PNG_MAXIMUM_SIZE / (count($tab) + 2 * $this->margin));
 

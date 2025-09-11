@@ -4,8 +4,6 @@ namespace QR_Code\Enums;
 
 /**
  * QR Code Output Formats
- * 
- * @package QR_Code\Enums
  */
 enum OutputFormat: int
 {

@@ -15,8 +15,6 @@ use QR_Code\Util\AbstractGenerator;
  *
  * QR Code Generator for PHP is distributed under MIT
  * Copyright (C) 2018 Bruno Vaula Werneck <brunovaulawerneck at gmail dot com>
- *
- * @package QR_Code\Types
  */
 class QR_VCard extends AbstractGenerator implements CodeType
 {
@@ -24,14 +22,17 @@ class QR_VCard extends AbstractGenerator implements CodeType
      * @var \QR_Code\Types\vCard\Person
      */
     protected $person;
+
     /**
      * @var \QR_Code\Types\vCard\Phone[]
      */
     protected $phones;
+
     /**
      * @var \QR_Code\Types\vCard\Address[]
      */
     protected $addresses;
+
     /**
      * @var string
      */
@@ -39,11 +40,11 @@ class QR_VCard extends AbstractGenerator implements CodeType
 
     /**
      * QR_VCard constructor.
-     * @param \QR_Code\Types\vCard\Person    $person
-     * @param \QR_Code\Types\vCard\Phone[]   $phones
-     * @param \QR_Code\Types\vCard\Address[] $addresses
+     *
+     * @param  \QR_Code\Types\vCard\Phone[]  $phones
+     * @param  \QR_Code\Types\vCard\Address[]  $addresses
      */
-    public function __construct (Person $person, array $phones = [], array $addresses = [])
+    public function __construct(Person $person, array $phones = [], array $addresses = [])
     {
         $this->validateAddresses($addresses);
         $this->validatePhones($phones);
@@ -51,30 +52,32 @@ class QR_VCard extends AbstractGenerator implements CodeType
         $this->person = $person;
         $this->phones = $phones;
         $this->addresses = $addresses;
-        $this->rev = "REV:" . (new \DateTime('NOW'))->format('Y:m:d\TH:i:s\Z') . "\n";
+        $this->rev = 'REV:'.(new \DateTime('NOW'))->format('Y:m:d\TH:i:s\Z')."\n";
     }
 
     /**
-     * @param \QR_Code\Types\vCard\Phone[] $phones
+     * @param  \QR_Code\Types\vCard\Phone[]  $phones
+     *
      * @throws \QR_Code\Exceptions\InvalidVCardPhoneEntryException
      */
-    protected function validatePhones (array $phones) : void
+    protected function validatePhones(array $phones): void
     {
         foreach ($phones as $phone) {
-            if (!$phone instanceof Phone) {
+            if (! $phone instanceof Phone) {
                 throw new InvalidVCardPhoneEntryException('Invalid VCard Phone Entry');
             }
         }
     }
 
     /**
-     * @param \QR_Code\Types\vCard\Address[] $addresses
+     * @param  \QR_Code\Types\vCard\Address[]  $addresses
+     *
      * @throws \QR_Code\Exceptions\InvalidVCardAddressEntryException
      */
-    protected function validateAddresses (array $addresses) : void
+    protected function validateAddresses(array $addresses): void
     {
         foreach ($addresses as $address) {
-            if (!$address instanceof Address) {
+            if (! $address instanceof Address) {
                 throw new InvalidVCardAddressEntryException('Invalid VCard Address Entry');
             }
         }
@@ -82,10 +85,8 @@ class QR_VCard extends AbstractGenerator implements CodeType
 
     /**
      * Get Formatted QR Code String
-     *
-     * @return string
      */
-    public function getCodeString () : string
+    public function getCodeString(): string
     {
         $response = "BEGIN:VCARD\nVERSION:3.0\n";
         $response .= (string) $this->person;
@@ -102,7 +103,7 @@ class QR_VCard extends AbstractGenerator implements CodeType
 
         $response .= $this->rev;
 
-        $response .= "END:VCARD";
+        $response .= 'END:VCARD';
 
         return $response;
     }

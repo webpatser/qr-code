@@ -2,17 +2,14 @@
 
 namespace QR_Code\Performance;
 
+use QR_Code\Cache\FileCache;
+use QR_Code\Cache\MemoryCache;
+use QR_Code\Enums\ImageEngine;
 use QR_Code\FastQRCode;
 use QR_Code\QR_Code;
-use QR_Code\Config\QRConfig;
-use QR_Code\Enums\ImageEngine;
-use QR_Code\Cache\MemoryCache;
-use QR_Code\Cache\FileCache;
 
 /**
  * Performance benchmarking tool for QR code generation
- * 
- * @package QR_Code\Performance
  */
 class Benchmark
 {
@@ -35,13 +32,13 @@ class Benchmark
 
         // Test original vs optimized
         $this->benchmarkOriginalVsOptimized($testData);
-        
+
         // Test different engines
         $this->benchmarkEngines($testData);
-        
+
         // Test caching performance
         $this->benchmarkCaching($testData);
-        
+
         // Test batch operations
         $this->benchmarkBatch($testData);
 
@@ -54,22 +51,22 @@ class Benchmark
     private function benchmarkOriginalVsOptimized(array $testData): void
     {
         echo "📊 Original vs Optimized Implementation\n";
-        echo str_repeat('-', 50) . "\n";
+        echo str_repeat('-', 50)."\n";
 
         foreach ($testData as $name => $data) {
             // Original implementation
-            $originalTime = $this->measureTime(function() use ($data) {
+            $originalTime = $this->measureTime(function () use ($data) {
                 return QR_Code::png($data);
             });
 
             // Optimized implementation
-            $fastQR = new FastQRCode();
-            $optimizedTime = $this->measureTime(function() use ($fastQR, $data) {
+            $fastQR = new FastQRCode;
+            $optimizedTime = $this->measureTime(function () use ($fastQR, $data) {
                 return $fastQR->png($data);
             });
 
             $improvement = (($originalTime - $optimizedTime) / $originalTime) * 100;
-            
+
             echo sprintf(
                 "%-10s | Original: %6.2fms | Optimized: %6.2fms | Improvement: %+5.1f%%\n",
                 $name,
@@ -81,7 +78,7 @@ class Benchmark
             $this->results['original_vs_optimized'][$name] = [
                 'original_time' => $originalTime,
                 'optimized_time' => $optimizedTime,
-                'improvement_percent' => $improvement
+                'improvement_percent' => $improvement,
             ];
         }
         echo "\n";
@@ -93,22 +90,24 @@ class Benchmark
     private function benchmarkEngines(array $testData): void
     {
         echo "🖼️  Image Engine Performance\n";
-        echo str_repeat('-', 50) . "\n";
+        echo str_repeat('-', 50)."\n";
 
         $engines = ImageEngine::getAvailable();
         $testData = ['medium' => $testData['medium']]; // Use medium test data
 
         foreach ($engines as $engine) {
-            if ($engine === ImageEngine::None) continue;
+            if ($engine === ImageEngine::None) {
+                continue;
+            }
 
             echo "Engine: {$engine->value}\n";
-            
+
             $fastQR = new FastQRCode(enableCache: false);
             $fastQR->setImageEngine($engine);
 
             $times = [];
             for ($i = 0; $i < 5; $i++) {
-                $times[] = $this->measureTime(function() use ($fastQR, $testData) {
+                $times[] = $this->measureTime(function () use ($fastQR, $testData) {
                     return $fastQR->png($testData['medium']);
                 });
             }
@@ -129,7 +128,7 @@ class Benchmark
                 'avg_time' => $avgTime,
                 'min_time' => $minTime,
                 'max_time' => $maxTime,
-                'performance_score' => $engine->getPerformanceScore()
+                'performance_score' => $engine->getPerformanceScore(),
             ];
         }
         echo "\n";
@@ -141,47 +140,47 @@ class Benchmark
     private function benchmarkCaching(array $testData): void
     {
         echo "💾 Caching Performance\n";
-        echo str_repeat('-', 50) . "\n";
+        echo str_repeat('-', 50)."\n";
 
         $data = $testData['medium'];
 
         // No cache
         $fastQRNoCache = new FastQRCode(enableCache: false);
-        $noCacheTime = $this->measureTime(function() use ($fastQRNoCache, $data) {
+        $noCacheTime = $this->measureTime(function () use ($fastQRNoCache, $data) {
             return $fastQRNoCache->png($data);
         });
 
         // Memory cache - first time (cache miss)
-        $fastQRMemory = new FastQRCode(new MemoryCache());
-        $memoryCacheMissTime = $this->measureTime(function() use ($fastQRMemory, $data) {
+        $fastQRMemory = new FastQRCode(new MemoryCache);
+        $memoryCacheMissTime = $this->measureTime(function () use ($fastQRMemory, $data) {
             return $fastQRMemory->png($data);
         });
 
         // Memory cache - second time (cache hit)
-        $memoryCacheHitTime = $this->measureTime(function() use ($fastQRMemory, $data) {
+        $memoryCacheHitTime = $this->measureTime(function () use ($fastQRMemory, $data) {
             return $fastQRMemory->png($data);
         });
 
         // File cache - first time (cache miss)
-        $fastQRFile = new FastQRCode(new FileCache());
-        $fileCacheMissTime = $this->measureTime(function() use ($fastQRFile, $data) {
+        $fastQRFile = new FastQRCode(new FileCache);
+        $fileCacheMissTime = $this->measureTime(function () use ($fastQRFile, $data) {
             return $fastQRFile->png($data);
         });
 
         // File cache - second time (cache hit)
-        $fileCacheHitTime = $this->measureTime(function() use ($fastQRFile, $data) {
+        $fileCacheHitTime = $this->measureTime(function () use ($fastQRFile, $data) {
             return $fastQRFile->png($data);
         });
 
         echo sprintf("No Cache:           %6.2fms\n", $noCacheTime * 1000);
         echo sprintf("Memory Cache Miss:  %6.2fms\n", $memoryCacheMissTime * 1000);
-        echo sprintf("Memory Cache Hit:   %6.2fms (%.1fx faster)\n", 
-            $memoryCacheHitTime * 1000, 
+        echo sprintf("Memory Cache Hit:   %6.2fms (%.1fx faster)\n",
+            $memoryCacheHitTime * 1000,
             $noCacheTime / $memoryCacheHitTime
         );
         echo sprintf("File Cache Miss:    %6.2fms\n", $fileCacheMissTime * 1000);
-        echo sprintf("File Cache Hit:     %6.2fms (%.1fx faster)\n", 
-            $fileCacheHitTime * 1000, 
+        echo sprintf("File Cache Hit:     %6.2fms (%.1fx faster)\n",
+            $fileCacheHitTime * 1000,
             $noCacheTime / $fileCacheHitTime
         );
 
@@ -202,35 +201,35 @@ class Benchmark
     private function benchmarkBatch(array $testData): void
     {
         echo "📦 Batch Operation Performance\n";
-        echo str_repeat('-', 50) . "\n";
+        echo str_repeat('-', 50)."\n";
 
         $batchData = array_fill(0, 10, $testData['medium']);
 
         // Individual generation
-        $fastQR = new FastQRCode();
-        $individualTime = $this->measureTime(function() use ($fastQR, $batchData) {
+        $fastQR = new FastQRCode;
+        $individualTime = $this->measureTime(function () use ($fastQR, $batchData) {
             foreach ($batchData as $data) {
                 $fastQR->png($data);
             }
         });
 
         // Batch generation
-        $batchTime = $this->measureTime(function() use ($fastQR, $batchData) {
+        $batchTime = $this->measureTime(function () use ($fastQR, $batchData) {
             $fastQR->batch($batchData);
         });
 
         $improvement = (($individualTime - $batchTime) / $individualTime) * 100;
 
         echo sprintf("Individual (10x):   %6.2fms\n", $individualTime * 1000);
-        echo sprintf("Batch (10x):        %6.2fms (%.1fx faster)\n", 
-            $batchTime * 1000, 
+        echo sprintf("Batch (10x):        %6.2fms (%.1fx faster)\n",
+            $batchTime * 1000,
             $individualTime / $batchTime
         );
 
         $this->results['batch'] = [
             'individual_time' => $individualTime,
             'batch_time' => $batchTime,
-            'improvement_percent' => $improvement
+            'improvement_percent' => $improvement,
         ];
 
         echo "\n";
@@ -243,6 +242,7 @@ class Benchmark
     {
         $start = microtime(true);
         $callback();
+
         return microtime(true) - $start;
     }
 
@@ -260,7 +260,7 @@ class Benchmark
     public function generateReport(): string
     {
         $report = "# QR Code Performance Benchmark Report\n\n";
-        
+
         if (isset($this->results['original_vs_optimized'])) {
             $report .= "## Original vs Optimized Implementation\n\n";
             foreach ($this->results['original_vs_optimized'] as $test => $data) {

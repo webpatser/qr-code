@@ -3,27 +3,27 @@
 /**
  * Directories
  */
-defined('DROP_ONE_LEVEL') ?: define('DROP_ONE_LEVEL', DIRECTORY_SEPARATOR . '..');
+defined('DROP_ONE_LEVEL') ?: define('DROP_ONE_LEVEL', DIRECTORY_SEPARATOR.'..');
 
 defined('TEMP_DIR') ?: define('TEMP_DIR',
-    __DIR__ .
-    DROP_ONE_LEVEL .
-    DROP_ONE_LEVEL .
-    DIRECTORY_SEPARATOR . 'public' .
-    DIRECTORY_SEPARATOR . 'temp' .
+    __DIR__.
+    DROP_ONE_LEVEL.
+    DROP_ONE_LEVEL.
+    DIRECTORY_SEPARATOR.'public'.
+    DIRECTORY_SEPARATOR.'temp'.
     DIRECTORY_SEPARATOR
 );
 
 defined('QR_CACHE_DIR') ?: define('QR_CACHE_DIR',
-    __DIR__ .
-    DROP_ONE_LEVEL .
-    DIRECTORY_SEPARATOR . 'cache' .
+    __DIR__.
+    DROP_ONE_LEVEL.
+    DIRECTORY_SEPARATOR.'cache'.
     DIRECTORY_SEPARATOR
 );
 defined('QR_LOG_DIR') ?: define('QR_LOG_DIR',
-    __DIR__ .
-    DROP_ONE_LEVEL .
-    DIRECTORY_SEPARATOR . 'logs' .
+    __DIR__.
+    DROP_ONE_LEVEL.
+    DIRECTORY_SEPARATOR.'logs'.
     DIRECTORY_SEPARATOR
 );
 
@@ -100,9 +100,8 @@ defined('N4') ?: define('N4', 10);
 /**
  * Colors
  */
-
 defined('QR_WHITE') ?: define('QR_WHITE', 0xFFFFFF);
 defined('QR_BLACK') ?: define('QR_BLACK', 0x000000);
 defined('QR_RED') ?: define('QR_RED', 0xFF0000);
 defined('QR_GREEN') ?: define('QR_GREEN', 0x00FF00);
-defined('QR_BLUE') ?: define('QR_BLUE', 0x0000FF);;
+defined('QR_BLUE') ?: define('QR_BLUE', 0x0000FF);

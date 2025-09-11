@@ -4,8 +4,6 @@ namespace QR_Code\Enums;
 
 /**
  * QR Code Error Correction Levels
- * 
- * @package QR_Code\Enums
  */
 enum ErrorCorrectionLevel: int
 {

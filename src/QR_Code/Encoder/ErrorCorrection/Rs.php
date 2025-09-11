@@ -18,31 +18,35 @@ namespace QR_Code\Encoder\ErrorCorrection;
  *
  * QR Code Generator for PHP is distributed under MIT
  * Copyright (C) 2018 Bruno Vaula Werneck <brunovaulawerneck at gmail dot com>
- *
- * @package QR_Code\Encoder\ErrorCorrection
  */
 class Rs
 {
     public static $items = [];
 
     /**
-     * @param $symsize
-     * @param $gfpoly
-     * @param $fcr
-     * @param $prim
-     * @param $nroots
-     * @param $pad
      * @return mixed|null|\QR_Code\Encoder\ErrorCorrection\RsItem
      */
-    public static function init_rs ($symsize, $gfpoly, $fcr, $prim, $nroots, $pad)
+    public static function init_rs($symsize, $gfpoly, $fcr, $prim, $nroots, $pad)
     {
         foreach (self::$items as $rs) {
-            if ($rs->pad != $pad) continue;
-            if ($rs->nroots != $nroots) continue;
-            if ($rs->mm != $symsize) continue;
-            if ($rs->gfpoly != $gfpoly) continue;
-            if ($rs->fcr != $fcr) continue;
-            if ($rs->prim != $prim) continue;
+            if ($rs->pad != $pad) {
+                continue;
+            }
+            if ($rs->nroots != $nroots) {
+                continue;
+            }
+            if ($rs->mm != $symsize) {
+                continue;
+            }
+            if ($rs->gfpoly != $gfpoly) {
+                continue;
+            }
+            if ($rs->fcr != $fcr) {
+                continue;
+            }
+            if ($rs->prim != $prim) {
+                continue;
+            }
 
             return $rs;
         }

@@ -4,20 +4,19 @@ namespace QR_Code;
 
 use QR_Code\Cache\CacheInterface;
 use QR_Code\Cache\MemoryCache;
-use QR_Code\Enums\ImageEngine;
-use QR_Code\Enums\ErrorCorrectionLevel;
-use QR_Code\Renderer\ImageRenderer;
 use QR_Code\Config\QRConfig;
+use QR_Code\Enums\ImageEngine;
+use QR_Code\Renderer\ImageRenderer;
 
 /**
  * High-performance QR Code generator with caching and optimizations
- * 
- * @package QR_Code
  */
 class FastQRCode
 {
     private CacheInterface $cache;
+
     private ImageEngine $preferredEngine;
+
     private bool $enableCache;
 
     public function __construct(
@@ -25,7 +24,7 @@ class FastQRCode
         ?ImageEngine $preferredEngine = null,
         bool $enableCache = true
     ) {
-        $this->cache = $cache ?? new MemoryCache();
+        $this->cache = $cache ?? new MemoryCache;
         $this->preferredEngine = $preferredEngine ?? ImageEngine::detectBest();
         $this->enableCache = $enableCache;
     }
@@ -40,12 +39,12 @@ class FastQRCode
         string $format = 'png'
     ): string {
         $config = $config ?? QRConfig::default();
-        
+
         // Generate cache key
         $cacheKey = $this->generateCacheKey($data, $config, $format);
-        
+
         // Check cache first
-        if ($this->enableCache && !$filename) {
+        if ($this->enableCache && ! $filename) {
             $cached = $this->cache->get($cacheKey);
             if ($cached !== null) {
                 return $cached;
@@ -55,14 +54,14 @@ class FastQRCode
         // Generate QR matrix (this is the expensive part to cache)
         $matrixCacheKey = $this->generateMatrixCacheKey($data, $config);
         $matrix = null;
-        
+
         if ($this->enableCache) {
             $matrix = $this->cache->get($matrixCacheKey);
         }
-        
+
         if ($matrix === null) {
             $matrix = $this->generateMatrix($data, $config);
-            
+
             if ($this->enableCache) {
                 $this->cache->set($matrixCacheKey, $matrix, 3600); // Cache matrix for 1 hour
             }
@@ -70,12 +69,12 @@ class FastQRCode
 
         // Render using optimized renderer
         $result = $this->renderMatrix($matrix, $config, $filename, $format);
-        
+
         // Cache result if no filename (base64 output)
-        if ($this->enableCache && !$filename) {
+        if ($this->enableCache && ! $filename) {
             $this->cache->set($cacheKey, $result, 1800); // Cache for 30 minutes
         }
-        
+
         return $result;
     }
 
@@ -108,12 +107,12 @@ class FastQRCode
     {
         $results = [];
         $config = $config ?? QRConfig::default();
-        
+
         // Pre-warm cache and batch operations
         foreach ($items as $key => $data) {
             $results[$key] = $this->generate($data, $config);
         }
-        
+
         return $results;
     }
 
@@ -138,11 +137,12 @@ class FastQRCode
      */
     public function setImageEngine(ImageEngine $engine): self
     {
-        if (!$engine->isAvailable()) {
+        if (! $engine->isAvailable()) {
             throw new \RuntimeException("Image engine {$engine->value} is not available");
         }
-        
+
         $this->preferredEngine = $engine;
+
         return $this;
     }
 
@@ -167,7 +167,7 @@ class FastQRCode
             $config->backgroundColor,
             $config->foregroundColor
         );
-        
+
         return $encoder->encode($data);
     }
 
@@ -182,7 +182,7 @@ class FastQRCode
     ): string {
         // Try preferred engine first, fallback to any available
         $engine = $this->preferredEngine;
-        if (!$engine->isAvailable()) {
+        if (! $engine->isAvailable()) {
             $engine = ImageEngine::detectBest();
         }
 
@@ -215,7 +215,7 @@ class FastQRCode
                 'fg_color' => $config->foregroundColor,
             ],
             'format' => $format,
-            'engine' => $this->preferredEngine->value
+            'engine' => $this->preferredEngine->value,
         ]);
     }
 
@@ -227,7 +227,7 @@ class FastQRCode
         return $this->cache->generateKey($data, [
             'error_level' => $config->errorCorrectionLevel->value,
             'version' => $config->version,
-            'matrix_only' => true
+            'matrix_only' => true,
         ]);
     }
 }

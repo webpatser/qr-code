@@ -2,12 +2,15 @@
     <table>
         <caption>Benchmark</caption>
         <tbody>
-        <?php foreach ($benchmarkResults as $timeIndex => $result): if ($timeIndex == 'Total') continue; ?>
+        <?php foreach ($benchmarkResults as $timeIndex => $result) {
+            if ($timeIndex == 'Total') {
+                continue;
+            } ?>
             <tr>
                 <td><?php echo $timeIndex; ?></td>
                 <td class="seconds"><?php echo $result; ?></td>
             </tr>
-        <?php endforeach; ?>
+        <?php } ?>
         <tr>
             <td colspan="2" class="cssHack"></td>
         </tr>

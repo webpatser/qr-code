@@ -33,7 +33,7 @@ class InputItem
      * @param \QR_Code\Encoder\BitStream $bitStream
      * @throws \Exception
      */
-    public function __construct (int $mode, int $size, $data, BitStream $bitStream = null)
+    public function __construct (int $mode, int $size, $data, ?BitStream $bitStream = null)
     {
         $setData = array_slice($data, 0, $size);
 

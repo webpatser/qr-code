@@ -149,6 +149,7 @@ class Encoder
         } catch (\Exception $e) {
 
             Logger::log($outfile, $e->getMessage());
+            throw $e;
 
         }
     }

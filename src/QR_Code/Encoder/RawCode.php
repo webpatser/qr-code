@@ -115,14 +115,14 @@ class RawCode
 
         if ($this->count < $this->dataLength) {
             $row = $this->count % $this->blocks;
-            $col = $this->count / $this->blocks;
+            $col = intval($this->count / $this->blocks);
             if ($col >= $this->rsBlocks[0]->dataLength) {
                 $row += $this->b1;
             }
             $ret = $this->rsBlocks[$row]->data[$col];
         } elseif ($this->count < $this->dataLength + $this->eccLength) {
             $row = ($this->count - $this->dataLength) % $this->blocks;
-            $col = ($this->count - $this->dataLength) / $this->blocks;
+            $col = intval(($this->count - $this->dataLength) / $this->blocks);
             $ret = $this->rsBlocks[$row]->ecc[$col];
         } else {
             return 0;

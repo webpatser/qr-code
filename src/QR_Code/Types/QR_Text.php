@@ -15,19 +15,18 @@ use QR_Code\Util\AbstractGenerator;
  */
 class QR_Text extends AbstractGenerator implements CodeType
 {
-    protected $data;
-
-    public function __construct (string $data)
-    {
-        $this->data = $data;
+    public function __construct(
+        private readonly string $data
+    ) {
+        if (empty($this->data)) {
+            throw new \InvalidArgumentException('Text data cannot be empty');
+        }
     }
 
     /**
      * Get Formatted QR Code String
-     *
-     * @return string Code String
      */
-    public function getCodeString () : string
+    public function getCodeString(): string
     {
         return $this->data;
     }

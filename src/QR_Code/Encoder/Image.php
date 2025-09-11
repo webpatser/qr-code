@@ -36,17 +36,18 @@ class Image
         } else {
             if ($saveAndPrint === true) {
                 ImagePng($image, $filename);
-                ImagePng($image);
-            } else {
                 ob_start();
                 ImagePng($image);
                 $qr = ob_get_clean();
+            } else {
+                ImagePng($image, $filename);
+                $qr = '';
             }
         }
 
         ImageDestroy($image);
 
-        return ('data:image/png;base64, ' . base64_encode($qr));
+        return $qr ? ('data:image/png;base64,' . base64_encode($qr)) : (is_string($filename) ? $filename : '');
 
     }
 

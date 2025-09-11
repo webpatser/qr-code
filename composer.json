@@ -1,15 +1,38 @@
 {
     "name": "webpatser/qr-code",
-    "description": "QR Code Generator for PHP",
+    "description": "Modern QR Code Generator for PHP - Support for multiple output formats and QR code types",
     "type": "library",
     "license": "MIT",
+    "keywords": [
+        "qr-code",
+        "qr",
+        "generator",
+        "barcode",
+        "png",
+        "svg",
+        "vcard",
+        "wifi",
+        "calendar"
+    ],
+    "homepage": "https://github.com/christoph/qr-code",
     "authors": [
         {
             "name": "Christoph Kempen",
-            "email": "christoph@downsized.nl"
+            "email": "christoph@downsized.nl",
+            "role": "Maintainer"
         }
     ],
-    "require": {},
+    "require": {
+        "php": "^8.2"
+    },
+    "suggest": {
+        "ext-gd": "For PNG and JPEG image generation",
+        "ext-imagick": "For advanced image generation with better performance"
+    },
+    "require-dev": {
+        "khanamiryan/qrcode-detector-decoder": "^2.0",
+        "phpunit/phpunit": "^11.0"
+    },
     "autoload": {
         "files": [
             "src/helpers/constants.php",
@@ -19,8 +42,19 @@
             "QR_Code\\": "src/QR_Code/"
         }
     },
-    "require-dev": {
-        "khanamiryan/qrcode-detector-decoder": "^1.0",
-        "phpunit/phpunit": "^6.5"
-    }
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "config": {
+        "sort-packages": true,
+        "optimize-autoloader": true
+    },
+    "scripts": {
+        "test": "phpunit",
+        "test-coverage": "phpunit --coverage-html coverage"
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
 }

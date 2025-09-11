@@ -1,20 +1,23 @@
 <?php
 
+namespace Tests;
+
 use PHPUnit\Framework\TestCase;
+use Zxing\QrReader;
 
 class QrCodeTests extends TestCase
 {
     protected $outfilePNG;
     protected $outfileSVG;
 
-    public function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->outfilePNG = __DIR__ . DIRECTORY_SEPARATOR . 'test.png';
         $this->outfileSVG = __DIR__ . DIRECTORY_SEPARATOR . 'test.svg';
     }
 
-    public function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
         if (file_exists($this->outfilePNG)) {

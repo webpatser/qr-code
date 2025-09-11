@@ -5,9 +5,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## Project Continuation Notice
+## Project Notice
 
-**Important**: The original `webpatser/qr-code` project was abandoned by its maintainer. This repository represents a complete restoration and modernization effort, continuing active development and maintenance from version 1.0.0 onwards.
+**Important**: This project is based on a PHP QR code library whose original GitHub repository was deleted. This repository represents a complete restoration and modernization effort, starting fresh with version 1.0.0.
 
 ---
 
@@ -90,9 +90,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## Pre-1.0.0 (Original Project - Abandoned)
+## Pre-1.0.0 (Original Project - Deleted)
 
-The original project by Bruno Vaula Werneck was abandoned around 2018-2019. Key characteristics:
+The original project's GitHub repository was deleted. The previous codebase had:
 - PHP 8.0 compatibility only  
 - Limited QR code type support
 - Basic PNG/SVG generation
@@ -102,7 +102,7 @@ The original project by Bruno Vaula Werneck was abandoned around 2018-2019. Key 
 - No caching or performance optimizations
 - Outdated dependencies
 
-**Note**: All issues from the original abandoned project have been resolved in version 1.0.0.
+**Note**: All issues from the previous codebase have been resolved in version 1.0.0.
 
 ---
 
@@ -120,6 +120,6 @@ This project is actively maintained. Please see the repository for contribution 
 ## Acknowledgments
 
 - **Original work**: Based on PHP QR Code by Dominik Dzienia (LGPL 3)
-- **Previous maintainer**: Bruno Vaula Werneck (abandoned project)
+- **Previous work**: Based on earlier QR code implementations (original repository deleted)
 - **Current maintainer**: Christoph Kempen (active development from v1.0.0)
-- **Community**: Thanks to all users who reported issues in the abandoned project
+- **Community**: Thanks to all users and contributors

@@ -72,8 +72,22 @@ abstract class AbstractGenerator
         return $this;
     }
 
+    /**
+     * Maximum pixels-per-module value accepted by setSize().
+     *
+     * A QR symbol can be up to ~185 modules wide, so a size beyond this would
+     * allocate an enormous image and exhaust memory in the GD encoder.
+     */
+    public const MAX_SIZE = 100;
+
     public function setSize(int $size): AbstractGenerator
     {
+        if ($size < 1 || $size > self::MAX_SIZE) {
+            throw new \InvalidArgumentException(
+                sprintf('Size must be between 1 and %d, got %d.', self::MAX_SIZE, $size)
+            );
+        }
+
         $this->size = $size;
 
         return $this;

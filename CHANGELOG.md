@@ -11,6 +11,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [Unreleased]
+
+### Security
+- Document that `QR_Code::png()` and `QR_Code::svg()` write `$outfile` to disk verbatim. Callers must validate or whitelist the path when it derives from untrusted input, to avoid directory traversal.
+
 ## [1.0.1] - 2025-01-11
 
 ### Fixed

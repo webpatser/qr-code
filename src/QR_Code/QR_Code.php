@@ -172,7 +172,10 @@ class QR_Code
     }
 
     /**
-     * @param  string|bool  $outfile
+     * @param  string|bool  $outfile  Written verbatim to disk. Never build this
+     *                                 from untrusted input (request data, decoded
+     *                                 QR content); validate/whitelist the path in
+     *                                 the caller to avoid directory traversal.
      * @param  string|int  $level
      */
     public static function png(string $text, $outfile = false, $level = QR_ECLEVEL_L, int $size = 3, int $margin = 4, bool $saveAndPrint = false, int $back_color = QR_WHITE, int $fore_color = QR_BLACK): string
@@ -206,7 +209,10 @@ class QR_Code
     }
 
     /**
-     * @param  string|bool  $outfile
+     * @param  string|bool  $outfile  Written verbatim to disk. Never build this
+     *                                 from untrusted input (request data, decoded
+     *                                 QR content); validate/whitelist the path in
+     *                                 the caller to avoid directory traversal.
      * @param  string|int  $level
      */
     public static function svg(string $text, $outfile = false, $level = QR_ECLEVEL_L, int $size = 3, int $margin = 4, bool $saveAndPrint = false, int $back_color = QR_WHITE, int $fore_color = QR_BLACK): void

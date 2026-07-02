@@ -32,3 +32,6 @@ Gemfile.lock
 public/temp/
 logs/
 cache/
+# Keep the source Cache namespace (the cache/ rule above matches it on
+# case-insensitive filesystems and would otherwise drop it from the repo).
+!src/QR_Code/Cache/
